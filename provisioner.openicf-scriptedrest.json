@@ -1,0 +1,172 @@
+{
+    "connectorRef" : {
+        "connectorHostRef" : "",
+        "connectorName" : "org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector",
+        "bundleName" : "org.forgerock.openicf.connectors.scriptedrest-connector",
+        "bundleVersion" : "[1.5.0.0,1.6.0.0)"
+    },
+    "operationTimeout" : {
+        "CREATE" : -1,
+        "UPDATE" : -1,
+        "DELETE" : -1,
+        "TEST" : -1,
+        "SCRIPT_ON_CONNECTOR" : -1,
+        "SCRIPT_ON_RESOURCE" : -1,
+        "GET" : -1,
+        "RESOLVEUSERNAME" : -1,
+        "AUTHENTICATE" : -1,
+        "SEARCH" : -1,
+        "VALIDATE" : -1,
+        "SYNC" : -1,
+        "SCHEMA" : -1
+    },
+    "resultsHandlerConfig" : {
+        "enableNormalizingResultsHandler" : true,
+        "enableFilteredResultsHandler" : true,
+        "enableCaseInsensitiveFilter" : false,
+        "enableAttributesToGetSearchResultsHandler" : true
+    },
+    "configurationProperties" : {
+        "serviceAddress" : "https://fhir.epic.com",
+        "password" : "",
+        "ehr" : "epic",
+        "scriptExtensions" : [
+            "groovy"
+        ],
+        "sourceEncoding" : "UTF-8",
+        "authenticateScriptFileName" : "AuthenticateScript.groovy",
+        "createScriptFileName" : "CreateScript.groovy",
+        "deleteScriptFileName" : "DeleteScript.groovy",
+        "schemaScriptFileName" : "SchemaScript.groovy",
+        "scriptOnResourceScriptFileName" : "ScriptOnResourceScript.groovy",
+        "searchScriptFileName" : "SearchScript.groovy",
+        "syncScriptFileName" : "SyncScript.groovy",
+        "testScriptFileName" : "TestScript.groovy",
+        "updateScriptFileName" : "UpdateScript.groovy",
+        "scriptBaseClass" : null,
+        "recompileGroovySource" : false,
+        "minimumRecompilationInterval" : 100,
+        "debug" : false,
+        "verbose" : false,
+        "warningLevel" : 1,
+        "tolerance" : 10,
+        "disabledGlobalASTTransformations" : null,
+        "targetDirectory" : null,
+        "scriptRoots" : [
+            "&{idm.instance.dir}/tools/"
+        ],
+        "customizerScriptFileName" : "CustomizerScript.groovy",
+        "username" : "a",
+        "newfield": "b"
+    },
+    "objectTypes" : {
+        "__ACCOUNT__" : {
+            "$schema" : "http://json-schema.org/draft-03/schema",
+            "id" : "__ACCOUNT__",
+            "type" : "object",
+            "nativeType" : "__ACCOUNT__",
+            "properties" : {
+                "departmentID" : {
+                    "type" : "string",
+                    "nativeName" : "departmentID",
+                    "nativeType" : "string"
+                },
+                "dateOfBirth" : {
+                    "type" : "string",
+                    "nativeName" : "dateOfBirth",
+                    "nativeType" : "string"
+                },
+                "religion" : {
+                    "type" : "string",
+                    "nativeName" : "religion",
+                    "nativeType" : "string"
+                },
+                "address" : {
+                    "type" : "object",
+                    "nativeName" : "address",
+                    "nativeType" : "object"
+                },
+                "race" : {
+                    "type" : "string",
+                    "nativeName" : "race",
+                    "nativeType" : "string"
+                },
+                "maritalStatus" : {
+                    "type" : "string",
+                    "nativeName" : "maritalStatus",
+                    "nativeType" : "string"
+                },
+                "departmentIDType" : {
+                    "type" : "string",
+                    "nativeName" : "departmentIDType",
+                    "nativeType" : "string"
+                },
+                "gender" : {
+                    "type" : "string",
+                    "nativeName" : "gender",
+                    "nativeType" : "string"
+                },
+                "nationalIdentifier" : {
+                    "type" : "string",
+                    "nativeName" : "nationalIdentifier",
+                    "nativeType" : "string"
+                },
+                "__NAME__" : {
+                    "type" : "string",
+                    "nativeName" : "__NAME__",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_UPDATEABLE"
+                    ]
+                },
+                "name" : {
+                    "type" : "object",
+                    "nativeName" : "name",
+                    "nativeType" : "object"
+                },
+                "telephoneNumber" : {
+                    "type" : "string",
+                    "nativeName" : "telephoneNumber",
+                    "nativeType" : "string"
+                },
+                "sn" : {
+                    "type" : "string",
+                    "nativeName" : "sn",
+                    "nativeType" : "string"
+                },
+                "givenName" : {
+                    "type" : "string",
+                    "nativeName" : "givenName",
+                    "nativeType" : "string"
+                },
+                "postalAddress" : {
+                    "type" : "string",
+                    "nativeName" : "postalAddress",
+                    "nativeType" : "string"
+                },
+                "postalCode" : {
+                    "type" : "string",
+                    "nativeName" : "postalCode",
+                    "nativeType" : "string"
+                },
+                "city" : {
+                    "type" : "string",
+                    "nativeName" : "city",
+                    "nativeType" : "string"
+                },
+                "country" : {
+                    "type" : "string",
+                    "nativeName" : "country",
+                    "nativeType" : "string"
+                },
+                "stateProvince" : {
+                    "type" : "string",
+                    "nativeName" : "stateProvince",
+                    "nativeType" : "string"
+                }
+            }
+        }
+    },
+    "enabled" : true,
+    "_id" : "provisioner.openicf/scriptedrest"
+}
