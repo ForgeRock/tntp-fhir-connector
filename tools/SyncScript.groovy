@@ -25,14 +25,10 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def log = log as Log
-def logPrefix = "[Epic] [SyncScript]: "
+def logPrefix = "[FHIR] [SyncScript]: "
 def objectClass = objectClass as ObjectClass
 
-log.error("syncing")
-
-//Since delta sync is not supported, syncing is done using the Search script (Reconciliation) instead of the sync script
-
-
+// log.error("syncing")
 // log.error("Entering " + operation + " Script");
 
 // if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
@@ -71,7 +67,7 @@ log.error("syncing")
 //     def file_url = ""
 //     connection.request(GET, JSON) { req ->
 //         uri.path = content_location
-//         headers.'Authorization' = "Bearer"
+//         headers.'Authorization' = "Bearer "
 //         response.success = { resp, json ->
 //             log.error(resp.status.toString())
 //             file_url = resp.body['output']['url'].toString()

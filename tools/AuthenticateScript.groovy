@@ -37,34 +37,3 @@ def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def password = password as Object;
 
-log.error("Entering " + operation + " Script");
-//
-//def authClient = new RESTClient(configuration.serviceAddress, configuration.defaultContentType)
-//authClient.setClient(httpClient)
-//authClient.setHeaders(connection.getHeaders())
-//
-//CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-//credentialsProvider.setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-//        new UsernamePasswordCredentials(username, SecurityUtil.decrypt(password as GuardedString)));
-//
-//return authClient.request(GET) { req ->
-//    uri.path = '/api/users/' + username
-//    uri.query = [
-//            _fields: '_id'
-//    ]
-//    context.setAttribute(HttpClientContext.AUTH_CACHE, new BasicAuthCache())
-//    context.setAttribute(HttpClientContext.CREDS_PROVIDER, credentialsProvider)
-//
-//    response.success = { resp, json ->
-//        return new Uid(json._id)
-//    }
-//
-//    response."401" = { resp, json ->
-//        throw new InvalidCredentialException();
-//    }
-//
-//    response.failure = { resp, json ->
-//        throw new ConnectorSecurityException()
-//    }
-//}
-

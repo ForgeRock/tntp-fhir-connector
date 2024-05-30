@@ -17,7 +17,3 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def log = log as Log
-def logPrefix = "[Epic] [TestScript]: "
-log.info(logPrefix + "Entering " + operation + " Script");
-log.info(logPrefix + "No Endpoint to test generic connectivity");
-log.error("Testing")

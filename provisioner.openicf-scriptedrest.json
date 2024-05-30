@@ -29,7 +29,6 @@
     "configurationProperties" : {
         "serviceAddress" : "https://fhir.epic.com",
         "password" : "",
-        "ehr" : "epic",
         "scriptExtensions" : [
             "groovy"
         ],
@@ -57,7 +56,7 @@
         ],
         "customizerScriptFileName" : "CustomizerScript.groovy",
         "username" : "a",
-        "newfield": "b"
+        "customConfiguration" : ""
     },
     "objectTypes" : {
         "__ACCOUNT__" : {

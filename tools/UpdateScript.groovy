@@ -49,11 +49,11 @@ def uid = uid as Uid
 //         def builder = new JsonBuilder()
 //         switch (objectClass) {
 //             case ObjectClass.ACCOUNT:
-//                 def dob = "1998-08-18"
+//                 def dob = ""
 //                 log.error(dob)
 //                 def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
 //                 connection.request(PUT, JSON) { req ->
-//                     uri.path = "/fhir/Patient/127759"
+//                     uri.path = "/fhir/Patient/" +uid
 //                     body = jsonString
 
 //                     response.success = { resp, json ->
