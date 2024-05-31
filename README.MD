@@ -22,6 +22,8 @@ FHIR connector.
 
 Install and setup the Java RCS: https://backstage.forgerock.com/docs/openicf/latest/connector-reference/java-server.html
 
+Create the tools directory in the openicf. Place the groovy scripts in the tools directory.
+
 `None`
 ## Configurations
 
