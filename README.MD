@@ -26,6 +26,8 @@ Once Java RCS openicf is downloaded, create a tools directory in the openicf dir
 
 ## Configurations
 
+Using the Platform UI, set these configurations:
+
 <table>
 <thead>
 <th>Property</th>
