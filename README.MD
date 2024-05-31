@@ -24,7 +24,6 @@ Install and setup the Java RCS: https://backstage.forgerock.com/docs/openicf/lat
 
 Once Java RCS openicf is downloaded, create a tools directory in the openicf directory. Place these groovy scripts in this tools directory.
 
-`None`
 ## Configurations
 
 <table>
