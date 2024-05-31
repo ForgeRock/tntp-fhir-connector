@@ -18,7 +18,9 @@
 FHIR connector. 
 
 
-## Inputs
+## Setup
+
+Install and setup the Java RCS: https://backstage.forgerock.com/docs/openicf/latest/connector-reference/java-server.html
 
 `None`
 ## Configurations
