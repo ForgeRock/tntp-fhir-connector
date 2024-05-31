@@ -124,7 +124,6 @@ def theResponse = connection.request(POST, URLENC) { req ->
         def returnedJson = json1.parseText(accessArray)
 
         access_token = returnedJson.access_token
-        //access_token = val1[0].access_token
         return 
     }
 
@@ -155,13 +154,13 @@ if (filter != null) {
                 // resp is HttpResponseDecorator
                 assert resp.status == 200
                 log.error 'request was successful'
-                log.error resp.contentType
-                log.error json.resourceType
                 Map<String, Object> map = new LinkedHashMap<>();
         		map.put("givenName", json.name[0].given[0]);
         		map.put("sn", json.name[0].family);
         		map.put("gender", json.gender);
-        		map.put("description", json.birthDate);
+                map.put("unique_identifier", json.identifier[0].value);
+        		map.put("dateOfBirth", json.birthDate);
+                map.put("userName", json.name[0].family)
         		
                 handler {
                     uid json.id
@@ -182,8 +181,6 @@ if (filter != null) {
     }
 } else {
     // List All
-    
-    log.error("Making request")
     def content_location = ""
     connection.request(GET, JSON) { req ->
         uri.path = '/interconnect-fhir-oauth/api/FHIR/R4/Group/'+customConfig.groupId+'/$export'
@@ -193,13 +190,11 @@ if (filter != null) {
         headers.'Prefer' = 'respond-async'
         response.success = { resp, json ->
             content_location = resp.headers['Content-Location'].toString()
-            log.error(content_location)
             return content_location
         }
 
         response.failure = { resp, json ->
             log.error 'first request failed'
-            log.error(resp.status)
             assert resp.status >= 400
             throw new ConnectorException("List all Failed")
         }
@@ -230,8 +225,6 @@ if (filter != null) {
 	        }
 	    }
         java.lang.Thread.sleep(2000);
-        //print this output
-        println java.lang.System.currentTimeMillis();
 	}
 	
 	
@@ -258,23 +251,31 @@ if (filter != null) {
 
     next_url = next_url.replaceAll("https://fhir.epic.com", "")
 
-    return connection.request(GET, JSON) { req ->
+    connection.request(GET) { req ->
         uri.path = next_url
         headers.'Authorization' = "Bearer " + access_token
-        response.success = { resp, json ->
+        response.success = { resp ->
 
-            log.error("PATIENT JSON")
-            println json
-        	def first = json.get(0)
-        	log.error(json.id)
-            // resp is HttpResponseDecorator
-            assert resp.status == 200
-            handler{
-                uid json.id
-                id json.id
-                attribute 'description', json.birthDate
-                attribute 'sn', json.name[0].family
 
+            def responseData = resp.entity.content.text
+
+            println "Response: " + responseData
+            def responseArray = responseData.split(java.lang.System.lineSeparator())
+            println "Response array size: " + responseArray.length
+            println "Response array: " + responseArray
+            
+
+            def json1 = new JsonSlurper()
+            for(def z =0; z < responseArray.length; z++) {
+                def item = responseArray[z]
+                def returnedJson = json1.parseText(item)
+                println "Item number " + z+ ": " +returnedJson
+                // resp is HttpResponseDecorator
+                assert resp.status == 200
+                handler{
+                    uid returnedJson.id
+                    id returnedJson.id
+                }
             }
                 
             

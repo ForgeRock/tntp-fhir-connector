@@ -119,16 +119,16 @@ customize {
         }
 
         // Configure Authentication
-        switch (ScriptedRESTConfiguration.AuthMethod.valueOf(c.defaultAuthMethod)) {
-            case ScriptedRESTConfiguration.AuthMethod.NONE:
-            case ScriptedRESTConfiguration.AuthMethod.BASIC_PREEMPTIVE:
-            case ScriptedRESTConfiguration.AuthMethod.BASIC:
-            case ScriptedRESTConfiguration.AuthMethod.OAUTH:
-                log.info(logPrefix + "No Auth Setup Neccessary.  Passing everything as a header");
-                break
-            default:
-                throw new IllegalArgumentException()
-        }
+        // switch (ScriptedRESTConfiguration.AuthMethod.valueOf(c.defaultAuthMethod)) {
+        //     case ScriptedRESTConfiguration.AuthMethod.NONE:
+        //     case ScriptedRESTConfiguration.AuthMethod.BASIC_PREEMPTIVE:
+        //     case ScriptedRESTConfiguration.AuthMethod.BASIC:
+        //     case ScriptedRESTConfiguration.AuthMethod.OAUTH:
+        //         log.info(logPrefix + "No Auth Setup Neccessary.  Passing everything as a header");
+        //         break
+        //     default:
+        //         throw new IllegalArgumentException()
+        // }
 
         c.propertyBag.put(HttpClientContext.COOKIE_STORE, new BasicCookieStore());
     }
@@ -143,11 +143,11 @@ customize {
         def c = delegate as ScriptedRESTConfiguration
 
         def authCache = null
-        if (AuthMethod.valueOf(c.defaultAuthMethod).equals(AuthMethod.BASIC_PREEMPTIVE)) {
-            authCache = new BasicAuthCache();
-            authCache.put(new HttpHost(c.serviceAddress?.host, c.serviceAddress?.port, c.serviceAddress?.scheme), new BasicScheme());
+        // if (AuthMethod.valueOf(c.defaultAuthMethod).equals(AuthMethod.BASIC_PREEMPTIVE)) {
+        //     authCache = new BasicAuthCache();
+        //     authCache.put(new HttpHost(c.serviceAddress?.host, c.serviceAddress?.port, c.serviceAddress?.scheme), new BasicScheme());
 
-        }
+        // }
 
         def cookieStore = c.propertyBag.get(HttpClientContext.COOKIE_STORE)
 

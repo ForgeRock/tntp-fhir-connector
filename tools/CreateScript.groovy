@@ -71,6 +71,8 @@ switch (objectClass) {
             Attribute thisAt = i.next();
             hm.put(thisAt.getName(), thisAt.getValue());
         }
+
+        println "========HASHMAP: " + hm 
         def builder = new JsonBuilder()
         def dob = hm.get("dateOfBirth");
         def sn = hm.get("sn");
@@ -84,18 +86,39 @@ switch (objectClass) {
         def unique_identifier = hm.get("unique_identifier");
         def gender = hm.get("gender");
 
-        dob = dob.get(0)
-        log.error(dob)
-        sn = sn.get(0)
-        givenName = givenName.get(0)
-        telephoneNumber = telephoneNumber.get(0)
-        postalAddress = postalAddress.get(0)
-        city = city.get(0)
-        state = state.get(0)
-        postalCode = postalCode.get(0)
-        country = country.get(0)
-        unique_identifier = unique_identifier.get(0)
-        gender = gender.get(0)
+        if (dob != null && dob.get(0) != null) {
+            dob = dob.get(0)
+        }
+        if (sn != null && sn.get(0) != null) {
+            sn = sn.get(0)
+        }
+        if (givenName != null && givenName.get(0) != null) {
+            givenName = givenName.get(0)
+        }
+        if (telephoneNumber != null && telephoneNumber.get(0) != null) {
+            telephoneNumber = telephoneNumber.get(0)
+        }
+        if (postalAddress != null && postalAddress.get(0) != null) {
+            postalAddress = postalAddress.get(0)
+        }
+        if (city != null && city.get(0) != null) {
+            city = city.get(0)
+        }
+        if (state != null && state.get(0) != null) {
+            state = state.get(0)
+        }
+        if (postalCode != null && postalCode.get(0) != null) {
+            postalCode = postalCode.get(0)
+        }
+        if (country != null && country.get(0) != null) {
+            country = country.get(0)
+        }
+        if (unique_identifier != null && unique_identifier.get(0) != null) {
+            unique_identifier = unique_identifier.get(0)
+        }
+        if (gender != null && gender.get(0) != null) {
+            gender = gender.get(0)
+        }
 
         def jsonString = "{\n" +
                 "  \"resourceType\": \"Patient\",\n" +
@@ -159,7 +182,6 @@ switch (objectClass) {
         def theSignedJWTString = thisSignedJwt.build();
 
 
-        log.error("Here is the signedJWT: " + theSignedJWTString);
 
         Map<String, String> pairs = new HashMap<String, String>();
         pairs.put("grant_type", "client_credentials");
@@ -172,11 +194,6 @@ switch (objectClass) {
             headers.'Content-Type' = 'application/x-www-form-urlencoded'
             headers.'Accept' = 'application/json'
             body = pairs
-            log.error("Making access token request")
-
-
-            
-
 
             response.success = { resp, val1 ->
                 def access_token1 = val1
@@ -190,11 +207,6 @@ switch (objectClass) {
             }
 
         }
-
-
-        //End JWT generation
-
-        log.error("PATIENT START")
         
 
         return connection.request(POST, JSON) { req ->
@@ -204,10 +216,8 @@ switch (objectClass) {
 
             response.success = { resp, json ->
                 location = resp.headers['location'].toString()
-                log.error(location)
-                local = location.substring(location.lastIndexOf("/") + 1)
-                log.error(local)
-                return local
+                patient_id = location.substring(location.lastIndexOf("/") + 1)
+                return patient_id
             }
 
         }
