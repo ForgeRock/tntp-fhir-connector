@@ -56,7 +56,7 @@
         ],
         "customizerScriptFileName" : "CustomizerScript.groovy",
         "username" : "a",
-        "customConfiguration" : ""
+        "customConfiguration" : "config {}"
     },
     "objectTypes" : {
         "__ACCOUNT__" : {
@@ -161,6 +161,26 @@
                 "stateProvince" : {
                     "type" : "string",
                     "nativeName" : "stateProvince",
+                    "nativeType" : "string"
+                },
+                "gender" : {
+                    "type" : "string",
+                    "nativeName" : "gender",
+                    "nativeType" : "string"
+                },
+                "unique_identifier" : {
+                    "type" : "string",
+                    "nativeName" : "unique_identifier",
+                    "nativeType" : "string"
+                },
+                "userName" : {
+                    "type" : "string",
+                    "nativeName" : "userName",
+                    "nativeType" : "string"
+                },
+                "email" : {
+                    "type" : "string",
+                    "nativeName" : "email",
                     "nativeType" : "string"
                 }
             }

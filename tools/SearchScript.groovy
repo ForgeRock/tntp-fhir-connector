@@ -61,6 +61,7 @@ def log = log as Log
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 
+def loggerPrefix = "[EPIC FHIR Scripted Rest Connector][Search] "
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
 // Start JWT generation
 
@@ -98,8 +99,6 @@ SignedJwt thisSignedJwt = JWT_BUILDER_FACTORY.jws(signingHandler)
 def theSignedJWTString = thisSignedJwt.build();
 
 
-log.error("Here is the signedJWT: " + theSignedJWTString);
-
 Map<String, String> pairs = new HashMap<String, String>();
 pairs.put("grant_type", "client_credentials");
 pairs.put("client_assertion", theSignedJWTString);
@@ -111,7 +110,7 @@ def theResponse = connection.request(POST, URLENC) { req ->
     headers.'Content-Type' = 'application/x-www-form-urlencoded'
     headers.'Accept' = 'application/json'
     body = pairs
-    log.error("Making access token request")
+    log.error(loggerPrefix + "Making access token request")
 
 
     
@@ -134,7 +133,7 @@ def theResponse = connection.request(POST, URLENC) { req ->
 
 if (filter != null) {
     def uuid = FrameworkUtil.getUidIfGetOperation(filter)
-    log.error(uuid.uidValue)
+    log.error(loggerPrefix + uuid.uidValue)
     if (uuid != null) {
         // Get user
         def special = configuration.getPropertyBag().get(uuid.uidValue)
@@ -153,14 +152,40 @@ if (filter != null) {
             response.success = { resp, json ->
                 // resp is HttpResponseDecorator
                 assert resp.status == 200
-                log.error 'request was successful'
+                log.error loggerPrefix+'request was successful'
+
+                println loggerPrefix + json.identifier
+
+                def userName
+                for(def i = 0; i < json.identifier.size(); i++) {
+                    println loggerPrefix + json.identifier[i]
+                    if(json.identifier[i].type.text == "EXTERNAL") {
+                        userName = json.identifier[i].value
+                    }
+                }
+                def email = null
+                def telephoneNumber = null
+                for(def i = 0; i < json.telecom.size(); i++) {
+                    if(json.telecom[i].system == "email") {
+                        email = json.telecom[i].value
+                    }
+                    if(json.telecom[i].system == "phone") {
+                        telephoneNumber = json.telecom[i].value
+                    }
+                }
+
                 Map<String, Object> map = new LinkedHashMap<>();
         		map.put("givenName", json.name[0].given[0]);
         		map.put("sn", json.name[0].family);
         		map.put("gender", json.gender);
                 map.put("unique_identifier", json.identifier[0].value);
         		map.put("dateOfBirth", json.birthDate);
-                map.put("userName", json.name[0].family)
+                map.put("userName", userName)
+                map.put("email", email)
+
+                if(telephoneNumber != null) {
+                    map.put("telephoneNumber", telephoneNumber)
+                }
         		
                 handler {
                     uid json.id
@@ -171,7 +196,7 @@ if (filter != null) {
             }
 
             response.failure = { resp, json ->
-                log.error 'request failed'
+                log.error(loggerPrefix +'request failed')
                 if (resp.status > 400 && resp.status != 404) {
                     throw new ConnectorException("Get Failed")
                 }
@@ -194,32 +219,32 @@ if (filter != null) {
         }
 
         response.failure = { resp, json ->
-            log.error 'first request failed'
+            log.error loggerPrefix +'first request failed'
             assert resp.status >= 400
             throw new ConnectorException("List all Failed")
         }
     }
 
-    log.error("Making status request")
+    log.error(loggerPrefix+"Making status request")
     
     def file_url = ""
     def status1 = "400"
     content_location = content_location.replaceAll("Content-Location: https://fhir.epic.com", "")
     while(status1.equals("200") == false) {
-        log.error("Making inner status request")
+        log.error(loggerPrefix+"Making inner status request")
 
 	    connection.request(GET) { req ->
 	        uri.path = content_location
 	        headers.'Authorization' = "Bearer " + access_token
 	        response.success = { resp, val  ->
-	            log.error(resp.status.toString())
+	            log.error(loggerPrefix+resp.status.toString())
 	            status1 = resp.status.toString()
 	            return
 	        }
 
 	        response.failure = { resp  ->
-	            log.error 'request failed'
-	            log.error(resp.status)
+	            log.error loggerPrefix+ 'request failed'
+	            log.error(loggerPrefix+resp.status)
 	            assert resp.status >= 400
 	            throw new ConnectorException("List all Failed")
 	        }
@@ -228,22 +253,20 @@ if (filter != null) {
 	}
 	
 	
-	log.error("content_location" + content_location)
+	log.error(loggerPrefix+"content_location" + content_location)
 	def next_url = ""
 	connection.request(GET, JSON) { req ->
 	        uri.path = content_location
 	        headers.'Authorization' = "Bearer " + access_token
 	       
 	        response.success = { resp, json  ->
-	            log.error(resp.status.toString())
 	            body1 = resp.data.toString()
 	            next_url = json.output[0].url
 	            return
 	        }
 
 	        response.failure = { resp  ->
-	            log.error 'request failed'
-	            log.error(resp.status)
+	            log.error loggerPrefix+'request failed'
 	            assert resp.status >= 400
 	            throw new ConnectorException("List all Failed")
 	        }
@@ -259,17 +282,19 @@ if (filter != null) {
 
             def responseData = resp.entity.content.text
 
-            println "Response: " + responseData
+            // log.error(loggerPrefix +  "Response: " + responseData)
             def responseArray = responseData.split(java.lang.System.lineSeparator())
-            println "Response array size: " + responseArray.length
-            println "Response array: " + responseArray
+            // log.error(loggerPrefix +  "Response array size: " + responseArray.length)
+            // log.error(loggerPrefix +  "Response array: " + responseArray)
             
 
             def json1 = new JsonSlurper()
             for(def z =0; z < responseArray.length; z++) {
                 def item = responseArray[z]
                 def returnedJson = json1.parseText(item)
-                println "Item number " + z+ ": " +returnedJson
+                log.error(loggerPrefix +  "Item number " + z+ ": " +returnedJson)
+
+
                 // resp is HttpResponseDecorator
                 assert resp.status == 200
                 handler{
@@ -282,8 +307,7 @@ if (filter != null) {
         }
 
         response.failure = { resp, json ->
-            log.error 'request failed'
-            log.error(resp.status)
+            log.error loggerPrefix+ 'request failed'
             assert resp.status >= 400
             throw new ConnectorException("List all Failed")
         }

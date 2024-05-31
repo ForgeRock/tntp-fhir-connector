@@ -107,6 +107,21 @@ postalCodeAIB.setMultiValued(false);
 def countryAIB = new AttributeInfoBuilder("country", String.class);
 countryAIB.setMultiValued(false);
 
+// dob
+def gender = new AttributeInfoBuilder("gender", String.class);
+gender.setMultiValued(false);
+
+// dob
+def userName = new AttributeInfoBuilder("userName", String.class);
+userName.setMultiValued(false);
+
+// dob
+def unique_identifier = new AttributeInfoBuilder("unique_identifier", String.class);
+unique_identifier.setMultiValued(false);
+
+def email = new AttributeInfoBuilder("email", String.class);
+email.setMultiValued(false);
+
 return builder.schema({
     objectClass {
         type ObjectClass.ACCOUNT_NAME
@@ -129,6 +144,10 @@ return builder.schema({
         attribute cityAIB.build()
         attribute stateProvinceAIB.build()
         attribute countryAIB.build()
+        attribute gender.build()
+        attribute unique_identifier.build()
+        attribute userName.build()
+        attribute email.build()
     }
 })
 
