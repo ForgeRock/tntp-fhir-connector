@@ -55,14 +55,14 @@ def log = log as Log
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 
-log.debug(loggerPrefix + "Entering " + operation + " Script");
+log.info(loggerPrefix + "Entering " + operation + " Script");
 def createAttributes = new AttributesAccessor(attributes as Set<Attribute>)
 def configuration = configuration as ScriptedRESTConfiguration
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
 
 switch (objectClass) {
     case ObjectClass.ACCOUNT:
-        log.debug(loggerPrefix + "Entering ObjectClass.ACCOUNT case in " + operation + " Script");
+        log.info(loggerPrefix + "Entering ObjectClass.ACCOUNT case in " + operation + " Script");
 
         HashMap hm = new HashMap();
 
