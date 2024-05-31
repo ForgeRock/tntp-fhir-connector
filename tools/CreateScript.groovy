@@ -81,7 +81,8 @@ switch (objectClass) {
         def state = hm.get("stateProvince");
         def postalCode = hm.get("postalCode");
         def country = hm.get("country");
-        def description = "111-55-3344"; //hm.get("description")
+        def unique_identifier = hm.get("unique_identifier");
+        def gender = hm.get("gender");
 
         dob = dob.get(0)
         log.error(dob)
@@ -93,7 +94,8 @@ switch (objectClass) {
         state = state.get(0)
         postalCode = postalCode.get(0)
         country = country.get(0)
-        //description = description.get(0)
+        unique_identifier = unique_identifier.get(0)
+        gender = gender.get(0)
 
         def jsonString = "{\n" +
                 "  \"resourceType\": \"Patient\",\n" +
@@ -101,10 +103,10 @@ switch (objectClass) {
                 "    {\n" +
                 "      \"use\": \"usual\",\n" +
                 "      \"system\": \"urn:oid:2.16.840.1.113883.4.1\",\n" +
-                "      \"value\": \"${description}\"\n" +
+                "      \"value\": \"${unique_identifier}\"\n" +
                 "    }\n" +
                 "  ],\n" +
-                "  \"gender\": \"male\",\n" +
+                "  \"gender\": \"${gender}\",\n" +
                 "  \"name\": [\n" +
                 "    {\n" +
                 "      \"use\": \"usual\",\n" +
@@ -121,7 +123,8 @@ switch (objectClass) {
         println jsonString
 
 
-        //Public and Private Keypair - you need to get one of your own for security purposes.  A free generator can be found here - https://mkjwk.org/
+    
+
         JWK challengeSignatureKey = JWK.parse(customConfig.key);
 
         def myAppClientID = customConfig.clientId;
@@ -190,6 +193,8 @@ switch (objectClass) {
 
 
         //End JWT generation
+
+        log.error("PATIENT START")
         
 
         return connection.request(POST, JSON) { req ->
@@ -198,14 +203,15 @@ switch (objectClass) {
             body = jsonString
 
             response.success = { resp, json ->
-                log.error(resp.status.toString())
                 location = resp.headers['location'].toString()
+                log.error(location)
                 local = location.substring(location.lastIndexOf("/") + 1)
                 log.error(local)
                 return local
             }
 
         }
+
 
 
 

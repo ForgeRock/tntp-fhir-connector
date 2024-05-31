@@ -71,7 +71,6 @@ def myAppClientID = customConfig.clientId;
 
 JwtClaimsSet jwtClaims = new JwtClaimsSet();
 
-log.error("ISS" + customConfig)
 jwtClaims.setIssuer(customConfig.iss);
 jwtClaims.setSubject(customConfig.sub);
 jwtClaims.addAudience(customConfig.aud);
@@ -193,7 +192,6 @@ if (filter != null) {
         headers.'Accept' = 'application/fhir+json'
         headers.'Prefer' = 'respond-async'
         response.success = { resp, json ->
-            log.error(resp.status.toString())
             content_location = resp.headers['Content-Location'].toString()
             log.error(content_location)
             return content_location
@@ -207,12 +205,13 @@ if (filter != null) {
         }
     }
 
-    log.error("Making next request")
+    log.error("Making status request")
     
     def file_url = ""
     def status1 = "400"
     content_location = content_location.replaceAll("Content-Location: https://fhir.epic.com", "")
     while(status1.equals("200") == false) {
+        log.error("Making inner status request")
 
 	    connection.request(GET) { req ->
 	        uri.path = content_location
@@ -220,7 +219,6 @@ if (filter != null) {
 	        response.success = { resp, val  ->
 	            log.error(resp.status.toString())
 	            status1 = resp.status.toString()
-	            //file_url = resp.body['output']['url'].toString()
 	            return
 	        }
 
@@ -231,22 +229,22 @@ if (filter != null) {
 	            throw new ConnectorException("List all Failed")
 	        }
 	    }
+        java.lang.Thread.sleep(2000);
+        //print this output
+        println java.lang.System.currentTimeMillis();
 	}
-	log.error("Making request 3")
 	
 	
-	log.error(content_location)
+	log.error("content_location" + content_location)
 	def next_url = ""
 	connection.request(GET, JSON) { req ->
 	        uri.path = content_location
 	        headers.'Authorization' = "Bearer " + access_token
 	       
 	        response.success = { resp, json  ->
-	        	log.error("Here")
 	            log.error(resp.status.toString())
 	            body1 = resp.data.toString()
 	            next_url = json.output[0].url
-	            //file_url = resp.body['output']['url'].toString()
 	            return
 	        }
 
@@ -258,18 +256,17 @@ if (filter != null) {
 	        }
 	    }
 
-    log.error("Making request 4")
     next_url = next_url.replaceAll("https://fhir.epic.com", "")
 
     return connection.request(GET, JSON) { req ->
         uri.path = next_url
         headers.'Authorization' = "Bearer " + access_token
         response.success = { resp, json ->
-        	log.error(json.getClass().getName())
-        	log.error(json.size().toString())
+
+            log.error("PATIENT JSON")
+            println json
         	def first = json.get(0)
         	log.error(json.id)
-        	log.error("Next")
             // resp is HttpResponseDecorator
             assert resp.status == 200
             handler{
