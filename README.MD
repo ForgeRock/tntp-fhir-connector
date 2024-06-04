@@ -24,6 +24,8 @@ Install and setup the Java RCS: https://backstage.forgerock.com/docs/openicf/lat
 
 Once Java RCS openicf is downloaded, create a tools directory in the openicf directory. Place these groovy scripts in this tools directory.
 
+There are also 3 libraries that need to be installed. These are called secrets-api, chf-http-core, and json-web-token. These can be installed in the /lib/framework directory of openicf.
+
 ## Configurations
 
 Using the Platform UI, set these configurations:
