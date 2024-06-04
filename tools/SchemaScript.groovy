@@ -1,9 +1,9 @@
 /*
- * This code is to be used exclusively in connection with Ping Identity Corporation software or services. 
- * Ping Identity Corporation only offers such software or services to legal entities who have entered into 
- * a binding license agreement with Ping Identity Corporation.
+ * Copyright 2014-2018 ForgeRock AS. All Rights Reserved
  *
- * Copyright 2024 Ping Identity Corporation. All Rights Reserved
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
  */
 
 
@@ -50,10 +50,6 @@ nationalIdentifierAIB.setMultiValued(false);
 // dob
 def dateOfBirthAIB = new AttributeInfoBuilder("dateOfBirth", String.class);
 dateOfBirthAIB.setMultiValued(false);
-
-// telephoneNumber
-def genderAIB = new AttributeInfoBuilder("gender", String.class);
-genderAIB.setMultiValued(false);
 
 // emailAddress
 def maritalStatusAIB = new AttributeInfoBuilder("maritalStatus", String.class);
@@ -130,7 +126,6 @@ return builder.schema({
         attribute departmentIDTypeAIB.build()
         attribute nationalIdentifierAIB.build()
         attribute dateOfBirthAIB.build()
-        attribute genderAIB.build()
         attribute maritalStatusAIB.build()
         attribute raceAIB.build()
         attribute religionAIB.build()
