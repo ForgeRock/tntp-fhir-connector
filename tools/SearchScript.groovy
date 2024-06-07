@@ -1,9 +1,9 @@
 /*
- * This code is to be used exclusively in connection with Ping Identity Corporation software or services. 
- * Ping Identity Corporation only offers such software or services to legal entities who have entered into 
- * a binding license agreement with Ping Identity Corporation.
+ * Copyright 2014-2018 ForgeRock AS. All Rights Reserved
  *
- * Copyright 2024 Ping Identity Corporation. All Rights Reserved
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
  */
 
 
@@ -133,7 +133,7 @@ def theResponse = connection.request(POST, URLENC) { req ->
 
 if (filter != null) {
     def uuid = FrameworkUtil.getUidIfGetOperation(filter)
-    log.error(loggerPrefix + uuid.uidValue)
+    //log.error(loggerPrefix + uuid.uidValue)
     if (uuid != null) {
         // Get user
         def special = configuration.getPropertyBag().get(uuid.uidValue)
@@ -161,11 +161,12 @@ if (filter != null) {
                     println loggerPrefix + json.identifier[i]
                     if(json.identifier[i].type.text == "EXTERNAL") {
                         userName = json.identifier[i].value
+                        break;
                     }
                 }
                 def email = null
                 def telephoneNumber = null
-                for(def i = 0; i < json.telecom.size(); i++) {
+                for(def i = 0; json.telecom != null && i < json.telecom.size(); i++) {
                     if(json.telecom[i].system == "email") {
                         email = json.telecom[i].value
                     }
@@ -173,20 +174,21 @@ if (filter != null) {
                         telephoneNumber = json.telecom[i].value
                     }
                 }
+                
 
                 Map<String, Object> map = new LinkedHashMap<>();
-        		map.put("givenName", json.name[0].given[0]);
-        		map.put("sn", json.name[0].family);
-        		map.put("gender", json.gender);
+                map.put("givenName", json.name[0].given[0]);
+                map.put("sn", json.name[0].family);
+                map.put("gender", json.gender);
                 map.put("unique_identifier", json.identifier[0].value);
-        		map.put("dateOfBirth", json.birthDate);
+                map.put("dateOfBirth", json.birthDate);
                 map.put("userName", userName)
                 map.put("email", email)
 
                 if(telephoneNumber != null) {
                     map.put("telephoneNumber", telephoneNumber)
                 }
-        		
+                
                 handler {
                     uid json.id
                     id json.id
@@ -233,44 +235,44 @@ if (filter != null) {
     while(status1.equals("200") == false) {
         log.error(loggerPrefix+"Making inner status request")
 
-	    connection.request(GET) { req ->
-	        uri.path = content_location
-	        headers.'Authorization' = "Bearer " + access_token
-	        response.success = { resp, val  ->
-	            log.error(loggerPrefix+resp.status.toString())
-	            status1 = resp.status.toString()
-	            return
-	        }
+        connection.request(GET) { req ->
+            uri.path = content_location
+            headers.'Authorization' = "Bearer " + access_token
+            response.success = { resp, val  ->
+                log.error(loggerPrefix+resp.status.toString())
+                status1 = resp.status.toString()
+                return
+            }
 
-	        response.failure = { resp  ->
-	            log.error loggerPrefix+ 'request failed'
-	            log.error(loggerPrefix+resp.status)
-	            assert resp.status >= 400
-	            throw new ConnectorException("List all Failed")
-	        }
-	    }
+            response.failure = { resp  ->
+                log.error loggerPrefix+ 'request failed'
+                log.error(loggerPrefix+resp.status)
+                assert resp.status >= 400
+                throw new ConnectorException("List all Failed")
+            }
+        }
         java.lang.Thread.sleep(2000);
-	}
-	
-	
-	log.error(loggerPrefix+"content_location" + content_location)
-	def next_url = ""
-	connection.request(GET, JSON) { req ->
-	        uri.path = content_location
-	        headers.'Authorization' = "Bearer " + access_token
-	       
-	        response.success = { resp, json  ->
-	            body1 = resp.data.toString()
-	            next_url = json.output[0].url
-	            return
-	        }
+    }
+    
+    
+    log.error(loggerPrefix+"content_location" + content_location)
+    def next_url = ""
+    connection.request(GET, JSON) { req ->
+            uri.path = content_location
+            headers.'Authorization' = "Bearer " + access_token
+           
+            response.success = { resp, json  ->
+                body1 = resp.data.toString()
+                next_url = json.output[0].url
+                return
+            }
 
-	        response.failure = { resp  ->
-	            log.error loggerPrefix+'request failed'
-	            assert resp.status >= 400
-	            throw new ConnectorException("List all Failed")
-	        }
-	    }
+            response.failure = { resp  ->
+                log.error loggerPrefix+'request failed'
+                assert resp.status >= 400
+                throw new ConnectorException("List all Failed")
+            }
+        }
 
     next_url = next_url.replaceAll("https://fhir.epic.com", "")
 
