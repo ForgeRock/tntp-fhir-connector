@@ -28,7 +28,9 @@ There are also 3 libraries that need to be installed. These are called secrets-a
 
 ## Configurations
 
-Using the Platform UI, set these configurations:
+Using the Platform UI, go to applications and browse app catalog. Select the Scripted Rest Connector.  
+
+After creating the connector, set these configurations:
 
 <table>
 <thead>
@@ -38,6 +40,38 @@ Using the Platform UI, set these configurations:
 <tr>
     <td>Service Address</td>
     <td>https://fhir.epic.com</td>
+</tr>
+<tr>
+    <td>Proxy Address</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Username</td>
+    <td>Any string</td>
+</tr>
+<tr>
+    <td>Password</td>
+    <td>Any string</td>
+</tr>
+<tr>
+    <td>Default Content Type</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Default Request Headers</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Default Authentication Method</td>
+    <td>BASIC</td>
+</tr>
+<tr>
+    <td>Custom Sensitive Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>customConfiguration</td>
+    <td>config { groupId = ''; iss = ''; sub=''; aud = ''; clientId=''; key='{jwk}'}</td>
 </tr>
 <tr>
     <td>Script Roots</td>
@@ -87,10 +121,7 @@ Using the Platform UI, set these configurations:
     <td>Customizer Script</td>
     <td>CustomizerScript.groovy</td>
 </tr>
-<tr>
-    <td>customConfiguration</td>
-    <td>config { groupId = ''; iss = ''; sub=''; aud = ''; clientId=''; key='{jwk}'}</td>
-</tr>
+
 
 </table>
 
