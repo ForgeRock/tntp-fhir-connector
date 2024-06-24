@@ -186,7 +186,7 @@ switch (objectClass) {
 
         def access_token
         def theResponse = connection.request(POST, URLENC) { req ->
-            uri.path = "/interconnect-fhir-oauth/oauth2/token/"
+            uri.path = "/FHIR/oauth2/token/"
             headers.'Content-Type' = 'application/x-www-form-urlencoded'
             headers.'Accept' = 'application/json'
             body = pairs
@@ -206,7 +206,7 @@ switch (objectClass) {
         
 
         return connection.request(POST, JSON) { req ->
-            uri.path = "/interconnect-fhir-oauth/api/FHIR/R4/Patient/"
+            uri.path = "/FHIR/api/FHIR/R4/Patient/"
             headers.'Authorization' = "Bearer " + access_token
             body = jsonString
 

@@ -105,8 +105,9 @@ pairs.put("client_assertion", theSignedJWTString);
 pairs.put("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
 
 def access_token
+
 def theResponse = connection.request(POST, URLENC) { req ->
-    uri.path = "/interconnect-fhir-oauth/oauth2/token/"
+    uri.path = "/FHIR/oauth2/token/"
     headers.'Content-Type' = 'application/x-www-form-urlencoded'
     headers.'Accept' = 'application/json'
     body = pairs
@@ -144,7 +145,7 @@ if (filter != null) {
         
 
         connection.request(GET, JSON) { req ->
-            uri.path = '/interconnect-fhir-oauth/api/FHIR/R4/Patient/' + uuid.uidValue
+            uri.path = '/FHIR/api/FHIR/R4/Patient/' + uuid.uidValue
             uri.query = [_format: "json"]
             headers.'Authorization' = "Bearer " + access_token
             
@@ -210,7 +211,7 @@ if (filter != null) {
     // List All
     def content_location = ""
     connection.request(GET, JSON) { req ->
-        uri.path = '/interconnect-fhir-oauth/api/FHIR/R4/Group/'+customConfig.groupId+'/$export'
+        uri.path = '/FHIR/api/FHIR/R4/Group/'+customConfig.groupId+'/$export'
         uri.query = [_type: "Patient"]
         headers.'Authorization' = "Bearer " + access_token
         headers.'Accept' = 'application/fhir+json'
