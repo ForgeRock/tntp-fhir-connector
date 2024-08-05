@@ -1,9 +1,9 @@
 /*
- * This code is to be used exclusively in connection with Ping Identity Corporation software or services. 
- * Ping Identity Corporation only offers such software or services to legal entities who have entered into 
- * a binding license agreement with Ping Identity Corporation.
+ * Copyright 2014-2020 ForgeRock AS. All Rights Reserved
  *
- * Copyright 2024 Ping Identity Corporation. All Rights Reserved
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
  */
 
 
@@ -49,11 +49,11 @@ def uid = uid as Uid
 //         def builder = new JsonBuilder()
 //         switch (objectClass) {
 //             case ObjectClass.ACCOUNT:
-//                 def dob = ""
+//                 def dob = "1998-08-18"
 //                 log.error(dob)
 //                 def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
 //                 connection.request(PUT, JSON) { req ->
-//                     uri.path = "/fhir/Patient/" +uid
+//                     uri.path = "/fhir/Patient/127759"
 //                     body = jsonString
 
 //                     response.success = { resp, json ->

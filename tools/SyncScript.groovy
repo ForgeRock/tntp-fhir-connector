@@ -1,9 +1,9 @@
 /*
- * This code is to be used exclusively in connection with Ping Identity Corporation software or services. 
- * Ping Identity Corporation only offers such software or services to legal entities who have entered into 
- * a binding license agreement with Ping Identity Corporation.
+ * Copyright 2014-2018 ForgeRock AS. All Rights Reserved
  *
- * Copyright 2024 Ping Identity Corporation. All Rights Reserved
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
  */
 
 import static groovyx.net.http.Method.GET
@@ -25,94 +25,67 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def log = log as Log
-def logPrefix = "[FHIR] [SyncScript]: "
+def logPrefix = "[Epic] [SyncScript]: "
 def objectClass = objectClass as ObjectClass
 
-// log.error("syncing")
-// log.error("Entering " + operation + " Script");
+log.error("syncing")
+log.error("Entering " + operation + " Script");
 
-// if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
-//     log.error "LAST TOKEN: {0}", "20220222080554Z"
-//     def lastToken = 0
-//     return new SyncToken(lastToken)
+if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
+    log.error "LAST TOKEN: {0}", "20220222080554Z"
+    def lastToken = 0
+    return new SyncToken(lastToken)
 
-// } else if (OperationType.SYNC.equals(operation)) {
-//     log.error("TOKEN" +token)
+} else if (OperationType.SYNC.equals(operation)) {
+    log.error("TOKEN" +token)
 
-//     def token = 0 as Object
+    def token = 0 as Object
 
-//     log.error("Making request")
-//     def content_location = ""
-//     connection.request(GET, JSON) { req ->
-//         uri.path = '/interconnect-fhir-oauth/api/FHIR/R4/Group/e3iabhmS8rsueyz7vaimuiaSmfGvi.QwjVXJANlPOgR83/$export'
-//         uri.query = [_type: "Patient"]
-//         headers.'Authorization' = "Bearer"
-//         response.success = { resp, json ->
-//             log.error(resp.status.toString())
-//             content_location = resp.headers['Content-Location'].toString()
-//             log.error(content_location)
-//             return content_location
-//         }
+    log.error("Making request")
+    return connection.request(GET, JSON) { req ->
+        uri.path = '/fhir/Patient'
+        uri.query = [_lastUpdated: "gt2024-01-01"]
+        log.error("Making request2")
+        response.success = { resp, json ->
+            // resp is HttpResponseDecorator
+            assert resp.status == 200
+            json.entry.each() { entry ->
+                    return handler({
+//                        def jsonString = "[{\"operation\": \"replace\", \"field\": \"city\", \"value\": \"${entry.resource.address.get(0).city}\"}]"
+//
+//                        def connection1 = new RESTClient("http://localhost:8080")
+//
+//                        connection1.request(PATCH, JSON) { req1 ->
+//                            uri.path = "/openidm/managed/user/0d7a3af6-ba17-4e63-a603-7ef38c02a24c"
+//                            body = jsonString
+//                            headers.'X-OpenIDM-Username' = 'openidm-admin'
+//                            headers.'X-OpenIDM-Password' = 'openidm-admin'
+//                            response.success = { resp1, json1 ->
+//                                log.error("Updated")
+//                            }
+//                        }
 
-//         response.failure = { resp, json ->
-//             log.error 'request failed'
-//             log.error(resp.status)
-//             assert resp.status >= 400
-//             throw new ConnectorException("List all Failed")
-//         }
-//     }
-//     log.error("waiting")
-//     wait(100000)
-//     log.error("Making next request")
-//     def file_url = ""
-//     connection.request(GET, JSON) { req ->
-//         uri.path = content_location
-//         headers.'Authorization' = "Bearer "
-//         response.success = { resp, json ->
-//             log.error(resp.status.toString())
-//             file_url = resp.body['output']['url'].toString()
-//             return
-//         }
+                        syncToken 2
+                        CREATE_OR_UPDATE()
+                        log.error("Executing object create")
+                        object {
+                            uid entry.resource.id
+                            id entry.resource.id
+                            attribute 'description', "description-update"
+                        }
 
-//         response.failure = { resp, json ->
-//             log.error 'request failed'
-//             log.error(resp.status)
-//             assert resp.status >= 400
-//             throw new ConnectorException("List all Failed")
-//         }
-//     }
-//     wait(100000)
-
-//     return connection.request(GET, JSON) { req ->
-//         uri.path = file_url
-//         headers.'Authorization' = "Bearer "
-//         log.error("Making request2")
-//         response.success = { resp, json ->
-//             // resp is HttpResponseDecorator
-//             assert resp.status == 200
-//             json.entry.each() { entry ->
-//                 return handler({
-//                     syncToken 2
-//                     CREATE_OR_UPDATE()
-//                     log.error("Executing object create")
-//                     object {
-//                         uid entry.resource.id
-//                         id entry.resource.id
-//                         attribute 'description', "description-update"
-//                     }
-
-//                 })
+                    })
                 
-//             }
-//             return new SyncToken(2)
-//         }
+            }
+            return new SyncToken(2)
+        }
 
-//         response.failure = { resp, json ->
-//             log.error 'request failed'
-//             log.error(resp.status)
-//             assert resp.status >= 400
-//             throw new ConnectorException("List all Failed")
-//         }
-//     }
-// }
+        response.failure = { resp, json ->
+            log.error 'request failed'
+            log.error(resp.status)
+            assert resp.status >= 400
+            throw new ConnectorException("List all Failed")
+        }
+    }
+}
 
