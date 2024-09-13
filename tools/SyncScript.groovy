@@ -49,7 +49,6 @@ if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
             // resp is HttpResponseDecorator
             assert resp.status == 200
             json.entry.each() { entry ->
-                if (entry.resource.id == "127759") {
                     handler({
                         syncToken 2
                         CREATE_OR_UPDATE()
@@ -61,7 +60,7 @@ if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
                         }
 
                     })
-                }
+                
             }
             return new SyncToken(2)
         }
