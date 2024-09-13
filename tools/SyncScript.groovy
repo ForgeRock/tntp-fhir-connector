@@ -19,7 +19,6 @@ import org.identityconnectors.framework.common.objects.SyncToken
 import org.identityconnectors.framework.common.exceptions.ConnectorException
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.GET
-import static groovyx.net.http.Method.PATCH
 def operation = operation as OperationType
 def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
@@ -50,32 +49,19 @@ if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
             // resp is HttpResponseDecorator
             assert resp.status == 200
             json.entry.each() { entry ->
-                    return handler({
-//                        def jsonString = "[{\"operation\": \"replace\", \"field\": \"city\", \"value\": \"${entry.resource.address.get(0).city}\"}]"
-//
-//                        def connection1 = new RESTClient("http://localhost:8080")
-//
-//                        connection1.request(PATCH, JSON) { req1 ->
-//                            uri.path = "/openidm/managed/user/0d7a3af6-ba17-4e63-a603-7ef38c02a24c"
-//                            body = jsonString
-//                            headers.'X-OpenIDM-Username' = 'openidm-admin'
-//                            headers.'X-OpenIDM-Password' = 'openidm-admin'
-//                            response.success = { resp1, json1 ->
-//                                log.error("Updated")
-//                            }
-//                        }
-
+                if (entry.resource.id == "127759") {
+                    handler({
                         syncToken 2
                         CREATE_OR_UPDATE()
                         log.error("Executing object create")
                         object {
                             uid entry.resource.id
                             id entry.resource.id
-                            attribute 'description', "description-update"
+                            attribute 'sn', "description-update"
                         }
 
                     })
-                
+                }
             }
             return new SyncToken(2)
         }
@@ -88,4 +74,3 @@ if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
         }
     }
 }
-
