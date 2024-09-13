@@ -53,7 +53,7 @@ switch (operation) {
                 log.error(dob)
                 def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
                 connection.request(PUT, JSON) { req ->
-                    uri.path = "/fhir/Patient/127759"
+                    uri.path = "/fhir/Patient/" +uid
                     body = jsonString
 
                     response.success = { resp, json ->
