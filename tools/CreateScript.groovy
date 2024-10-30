@@ -21,6 +21,9 @@ import org.identityconnectors.framework.common.objects.OperationOptions
 import java.util.Iterator
 import java.util.HashMap
 
+import static groovyx.net.http.Method.POST
+import static groovyx.net.http.Method.PUT
+
 def operation = operation as OperationType
 
 def configuration = configuration as ScriptedRESTConfiguration
@@ -31,9 +34,13 @@ def log = log as Log
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 
-def logPrefix = "[Epic] [CreateScript]: "
+def logPrefix = "[FHIR] [CreateScript]: "
 log.error(logPrefix + "Entering " + operation + " Script");
 def createAttributes = new AttributesAccessor(attributes as Set<Attribute>)
+
+def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
+def up = customConfig.username + ":" + customConfig.password
+def bauth = up.getBytes().encodeBase64()
 
 switch (objectClass) {
     case ObjectClass.ACCOUNT:
@@ -52,17 +59,24 @@ switch (objectClass) {
         log.error("JSON STRING")
         def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
         println jsonString
-        def response = connection.post(
-                                  path: '/fhir/Patient',
-                                  contentType: JSON,
-                                  requestContentType: JSON,
-                                  body: jsonString);
 
-        log.error(logPrefix + "sent post.  Here is the response status : " + response.getStatus());
-        log.error(logPrefix + "sent post.  Here is the response data : " + response.getData());
-        log.error(logPrefix + "sent post.  Here is the response patient ID : " + response.getData().id);
-       name = response.getData().id
-        log.error("name" + name)
+        try {
+            return connection.request(POST, JSON) { req ->
+                uri.path = "/fhir/Patient"
+                body = jsonString
+
+                response.success = { resp, json ->
+                    return json.id
+                }
+
+            }
+        } catch (Exception ex) {
+            log.error("exception")
+            println ex
+        }
+
+
+        
         break
 }
 return name

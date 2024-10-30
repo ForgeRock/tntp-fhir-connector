@@ -29,6 +29,9 @@ import org.identityconnectors.framework.common.FrameworkUtil
 import org.identityconnectors.framework.common.exceptions.ConnectorException
 import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTUtils
 import static groovyx.net.http.ContentType.JSON
+
+import groovy.json.JsonSlurper
+
 def operation = operation as OperationType
 def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
@@ -38,7 +41,12 @@ def log = log as Log
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def bearer = ""
+
         
+def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
+def up = customConfig.username + ":" + customConfig.password
+def bauth = up.getBytes().encodeBase64()
+
 if (filter != null) {
     def uuid = FrameworkUtil.getUidIfGetOperation(filter)
     log.error(uuid.uidValue)
@@ -52,9 +60,9 @@ if (filter != null) {
         
 
         connection.request(GET, JSON) { req ->
-            uri.path = '/interconnect-fhir-oauth/api/FHIR/R4/Patient/' + uuid.uidValue
+            uri.path = '/fhir/Patient/' + uuid.uidValue
             uri.query = [_format: "json"]
-            headers.'Authorization' = "Bearer " + bearer
+            // headers.'Authorization' = "Basic " + bauth
             
 
             response.success = { resp, json ->
@@ -63,12 +71,14 @@ if (filter != null) {
                 log.error 'request was successful'
                 log.error resp.contentType
                 log.error json.resourceType
+                println json
+                log.error(json.id)
                 Map<String, Object> map = new LinkedHashMap<>();
-        		map.put("givenName", json.name[0].given[0]);
-        		map.put("sn", json.name[0].family);
-        		map.put("gender", json.gender);
-        		map.put("description", json.birthDate);
-        		
+                map.put("givenName", json.id);
+                map.put("sn", json.id);
+                map.put("gender", json.id);
+                map.put("description", json.birthDate);
+                
                 handler {
                     uid json.id
                     id json.id
@@ -87,97 +97,27 @@ if (filter != null) {
 
     }
 } else {
-    // List All
     
-    def content_location = ""
-    connection.request(GET, JSON) { req ->
-        uri.path = '/interconnect-fhir-oauth/api/FHIR/R4/Group//$export'
-        uri.query = [_type: "Patient"]
-        headers.'Authorization' = "Bearer " + bearer
-        headers.'Accept' = 'application/fhir+json'
-        headers.'Prefer' = 'respond-async'
-        response.success = { resp, json ->
-            content_location = resp.headers['Content-Location'].toString()
-            return content_location
-        }
-
-        response.failure = { resp, json ->
-            log.error 'first request failed'
-            log.error(resp.status)
-            assert resp.status >= 400
-            throw new ConnectorException("List all Failed")
-        }
-    }
-
-    
-    def file_url = ""
-    def status1 = "400"
-    content_location = content_location.replaceAll("Content-Location: https://fhir.epic.com", "")
-    while(status1.equals("200") == false) {
-
-	    connection.request(GET) { req ->
-	        uri.path = content_location
-	        headers.'Authorization' = "Bearer " + bearer
-	        response.success = { resp, val  ->
-	            log.error(resp.status.toString())
-	            status1 = resp.status.toString()
-	            //file_url = resp.body['output']['url'].toString()
-	            return
-	        }
-
-	        response.failure = { resp  ->
-	            log.error 'request failed'
-	            log.error(resp.status)
-	            assert resp.status >= 400
-	            throw new ConnectorException("List all Failed")
-	        }
-	    }
-	}
-	
-	
-	log.error(content_location)
-	def next_url = ""
-	connection.request(GET, JSON) { req ->
-	        uri.path = content_location
-	        headers.'Authorization' = "Bearer " + bearer
-	       
-	        response.success = { resp, json  ->
-	        	log.error("Here")
-	            log.error(resp.status.toString())
-	            body1 = resp.data.toString()
-	            next_url = json.output[0].url
-	            //file_url = resp.body['output']['url'].toString()
-	            return
-	        }
-
-	        response.failure = { resp  ->
-	            log.error 'request failed'
-	            log.error(resp.status)
-	            assert resp.status >= 400
-	            throw new ConnectorException("List all Failed")
-	        }
-	    }
-
-    next_url = next_url.replaceAll("https://fhir.epic.com", "")
+    log.error( "Entering patient Script!");
 
     return connection.request(GET, JSON) { req ->
-        uri.path = next_url
-        headers.'Authorization' = "Bearer " + bearer
+        uri.path = "/fhir/Patient/"
+        // headers.'Authorization' = "Basic " + bauth
         response.success = { resp, json ->
-
-        	def first = json.get(0)
-        	log.error(json.id)
-            // resp is HttpResponseDecorator
             assert resp.status == 200
-            handler{
-                uid json.id
-                id json.id
-                attribute 'description', json.birthDate
-                attribute 'sn', json.name[0].family
-
+            json.entry.each { item ->
+                Map<String, Object> map = new LinkedHashMap<>();
+                map.put("givenName", item.resource.name[0].given[0]);
+                map.put("sn", item.resource.name[0].family);
+                map.put("description", item.resource.birthDate);
+                map.put("gender", item.resource.gender);
+                handler {
+                    uid item.resource.id
+                    id item.resource.id
+                    attributes ScriptedRESTUtils.MapToAttributes(map, [], false, false)
+                }
             }
-                
-            
+                         
         }
 
         response.failure = { resp, json ->
