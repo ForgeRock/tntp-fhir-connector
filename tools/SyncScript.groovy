@@ -26,7 +26,9 @@ def connection = customizedConnection as RESTClient
 def log = log as Log
 def logPrefix = "[FHIR] [SyncScript]: "
 def objectClass = objectClass as ObjectClass
-
+def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
+def up = customConfig.username + ":" + customConfig.password
+def bauth = up.getBytes().encodeBase64()
 log.error("syncing")
 log.error("Entering " + operation + " Script");
 
@@ -44,6 +46,7 @@ if (OperationType.GET_LATEST_SYNC_TOKEN.equals(operation)) {
     return connection.request(GET, JSON) { req ->
         uri.path = '/fhir/Patient'
         uri.query = [_lastUpdated: "gt2024-01-01"]
+        headers.'Authorization' = "Basic " + bauth
         log.error("Making request2")
         response.success = { resp, json ->
             // resp is HttpResponseDecorator

@@ -62,7 +62,7 @@ if (filter != null) {
         connection.request(GET, JSON) { req ->
             uri.path = '/fhir/Patient/' + uuid.uidValue
             uri.query = [_format: "json"]
-            // headers.'Authorization' = "Basic " + bauth
+            headers.'Authorization' = "Basic " + bauth
             log.error("Searching....")
             log.error(uuid.uidValue)
             
@@ -101,7 +101,7 @@ if (filter != null) {
 
     return connection.request(GET, JSON) { req ->
         uri.path = "/fhir/Patient/"
-        // headers.'Authorization' = "Basic " + bauth
+        headers.'Authorization' = "Basic " + bauth
         response.success = { resp, json ->
             assert resp.status == 200
             json.entry.each { item ->

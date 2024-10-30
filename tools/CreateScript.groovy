@@ -71,6 +71,7 @@ switch (objectClass) {
         try {
             return connection.request(POST, JSON) { req ->
                 uri.path = "/fhir/Patient"
+                headers.'Authorization' = "Basic " + bauth
                 body = jsonString
 
                 response.success = { resp, json ->
