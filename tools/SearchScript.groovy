@@ -63,6 +63,8 @@ if (filter != null) {
             uri.path = '/fhir/Patient/' + uuid.uidValue
             uri.query = [_format: "json"]
             // headers.'Authorization' = "Basic " + bauth
+            log.error("Searching....")
+            log.error(uuid.uidValue)
             
 
             response.success = { resp, json ->
@@ -71,8 +73,6 @@ if (filter != null) {
                 log.error 'request was successful'
                 log.error resp.contentType
                 log.error json.resourceType
-                println json
-                log.error(json.id)
                 Map<String, Object> map = new LinkedHashMap<>();
                 map.put("givenName", json.name[0].given[0]);
                 map.put("sn", json.name[0].family);
@@ -97,7 +97,7 @@ if (filter != null) {
     }
 } else {
     
-    log.error( "Entering patient Script!");
+    log.error( "Searching all...");
 
     return connection.request(GET, JSON) { req ->
         uri.path = "/fhir/Patient/"

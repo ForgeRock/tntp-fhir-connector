@@ -24,7 +24,7 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def log = log as Log
-def logPrefix = "[Epic] [SyncScript]: "
+def logPrefix = "[FHIR] [SyncScript]: "
 def objectClass = objectClass as ObjectClass
 
 log.error("syncing")
