@@ -74,9 +74,8 @@ if (filter != null) {
                 println json
                 log.error(json.id)
                 Map<String, Object> map = new LinkedHashMap<>();
-                map.put("givenName", json.id);
-                map.put("sn", json.id);
-                map.put("gender", json.id);
+                map.put("givenName", json.name[0].given[0]);
+                map.put("sn", json.name[0].family);
                 map.put("description", json.birthDate);
                 
                 handler {

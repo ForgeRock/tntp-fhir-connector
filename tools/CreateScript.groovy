@@ -56,8 +56,16 @@ switch (objectClass) {
         def builder = new JsonBuilder()
         def dob = hm.get("dateOfBirth");
         dob = dob.get(0)
+        log.error(dob)
+        def givenName = hm.get("givenName");
+        givenName = givenName.get(0)
+        log.error(givenName)
+        def sn = hm.get("sn");
+        sn = sn.get(0)
         log.error("JSON STRING")
-        def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
+        log.error(givenName)
+        log.error(sn)
+        def jsonString = "{\"resourceType\":\"Patient\",\"birthDate\":\"${dob}\",\"name\":[{\"family\":\"${sn}\",\"given\":[\"${givenName}\"]}]}"
         println jsonString
 
         try {
