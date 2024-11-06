@@ -76,7 +76,16 @@ if (filter != null) {
                 Map<String, Object> map = new LinkedHashMap<>();
                 map.put("givenName", json.name[0].given[0]);
                 map.put("sn", json.name[0].family);
-                map.put("description", json.birthDate);
+                map.put("dateOfBirth", json.birthDate);
+                map.put("gender", json.gender);
+                map.put("telephoneNumber", json.telecom[0].value);
+                map.put("city", json.address[0].city);
+                map.put("state", json.address[0].state);
+                map.put("stateProvince", json.address[0].state);
+                map.put("postalCode", json.address[0].postalCode);
+                map.put("postalAddress", json.address[0].line[0]);
+                map.put("country", json.address[0].country);
+
                 
                 handler {
                     uid json.id
@@ -108,8 +117,15 @@ if (filter != null) {
                 Map<String, Object> map = new LinkedHashMap<>();
                 map.put("givenName", item.resource.name[0].given[0]);
                 map.put("sn", item.resource.name[0].family);
-                map.put("description", item.resource.birthDate);
+                map.put("dateOfBirth", item.resource.birthDate);
                 map.put("gender", item.resource.gender);
+                map.put("telephoneNumber", item.resource.telecom[0].value);
+                map.put("city", item.resource.address[0].city);
+                map.put("state", item.resource.address[0].state);
+                map.put("stateProvince", item.resource.address[0].state);
+                map.put("postalCode", item.resource.address[0].postalCode);
+                map.put("postalAddress", item.resource.address[0].line[0]);
+                map.put("country", item.resource.address[0].country);
                 handler {
                     uid item.resource.id
                     id item.resource.id
