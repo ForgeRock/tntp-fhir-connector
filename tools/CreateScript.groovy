@@ -62,9 +62,6 @@ switch (objectClass) {
         log.error(givenName)
         def sn = hm.get("sn");
         sn = sn.get(0)
-        log.error("JSON STRING")
-        log.error(givenName)
-        log.error(sn)
         def jsonString = "{\"resourceType\":\"Patient\",\"birthDate\":\"${dob}\",\"name\":[{\"family\":\"${sn}\",\"given\":[\"${givenName}\"]}]}"
         println jsonString
 

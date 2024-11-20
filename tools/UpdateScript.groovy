@@ -43,17 +43,28 @@ def uid = uid as Uid
 
 log.error("Entering " + operation + " Script");
 
+def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
+def up = customConfig.username + ":" + customConfig.password
+def bauth = up.getBytes().encodeBase64()
+
 log.error("uid:" + uid)
 switch (operation) {
     case OperationType.UPDATE:
         def builder = new JsonBuilder()
         switch (objectClass) {
             case ObjectClass.ACCOUNT:
-                def dob = "1998-08-18"
+                def dob = hm.get("dateOfBirth");
+                dob = dob.get(0)
                 log.error(dob)
-                def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
-                connection.request(PUT, JSON) { req ->
-                    uri.path = "/fhir/Patient/" +uid
+                def givenName = hm.get("givenName");
+                givenName = givenName.get(0)
+                log.error(givenName)
+                def sn = hm.get("sn");
+                sn = sn.get(0)
+                def jsonString = "{\"resourceType\":\"Patient\",\"birthDate\":\"${dob}\",\"name\":[{\"family\":\"${sn}\",\"given\":[\"${givenName}\"]}]}"
+                return connection.request(PUT, JSON) { req ->
+                    uri.path = "/fhir/Patient/" + uid
+                    headers.'Authorization' = "Basic " + bauth
                     body = jsonString
 
                     response.success = { resp, json ->
