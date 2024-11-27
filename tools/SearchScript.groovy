@@ -65,6 +65,17 @@ if (filter != null) {
             headers.'Authorization' = "Basic " + bauth
             log.error("Searching....")
             log.error(uuid.uidValue)
+            telephoneNumber = null
+            email = null
+
+            for(def i = 0; json.telecom != null && i < json.telecom.size(); i++) {
+                    if(json.telecom[i].system == "email") {
+                        email = json.telecom[i].value
+                    }
+                    if(json.telecom[i].system == "phone") {
+                        telephoneNumber = json.telecom[i].value
+                    }
+                }
             
 
             response.success = { resp, json ->
@@ -78,7 +89,12 @@ if (filter != null) {
                 map.put("sn", json.name[0].family);
                 map.put("dateOfBirth", json.birthDate);
                 map.put("gender", json.gender);
-                map.put("telephoneNumber", json.telecom[0].value);
+                if(telephoneNumber != null) {
+                    map.put("telephoneNumber", telephoneNumber)
+                }
+                if(email != null) {
+                    map.put("email", email)
+                }
                 map.put("city", json.address[0].city);
                 map.put("state", json.address[0].state);
                 map.put("stateProvince", json.address[0].state);
