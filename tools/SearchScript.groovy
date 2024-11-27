@@ -29,7 +29,7 @@ import org.identityconnectors.framework.common.FrameworkUtil
 import org.identityconnectors.framework.common.exceptions.ConnectorException
 import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTUtils
 import static groovyx.net.http.ContentType.JSON
-
+import org.identityconnectors.common.security.SecurityUtil
 import groovy.json.JsonSlurper
 
 def operation = operation as OperationType
@@ -44,7 +44,7 @@ def bearer = ""
 
         
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
-def up = customConfig.username + ":" + customConfig.password
+def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
 def bauth = up.getBytes().encodeBase64()
 
 if (filter != null) {
@@ -85,22 +85,42 @@ if (filter != null) {
                 log.error resp.contentType
                 log.error json.resourceType
                 Map<String, Object> map = new LinkedHashMap<>();
-                map.put("givenName", json.name[0].given[0]);
-                map.put("sn", json.name[0].family);
-                map.put("dateOfBirth", json.birthDate);
-                map.put("gender", json.gender);
+                if(json.name[0] != null && json.name[0].given[0] != null) {
+                    map.put("givenName", json.name[0].given[0])
+                }
+                if(json.name[0] != null && json.name[0].family != null) {
+                    map.put("sn", json.name[0].family);
+                }
+                if(json.birthDate != null) {
+                    map.put("dateOfBirth", json.birthDate);
+                }
+                if(json.gender != null) {
+                    map.put("gender", json.gender);
+                }
                 if(telephoneNumber != null) {
                     map.put("telephoneNumber", telephoneNumber)
                 }
                 if(email != null) {
                     map.put("email", email)
                 }
-                map.put("city", json.address[0].city);
-                map.put("state", json.address[0].state);
-                map.put("stateProvince", json.address[0].state);
-                map.put("postalCode", json.address[0].postalCode);
-                map.put("postalAddress", json.address[0].line[0]);
-                map.put("country", json.address[0].country);
+                if(json.address[0] != null && json.address[0].city != null) {
+                    map.put("city", json.address[0].city);
+                }
+                if(json.address[0] != null && json.address[0].state != null) {
+                    map.put("state", json.address[0].state);
+                }
+                if(json.address[0] != null && json.address[0].state != null) {
+                    map.put("stateProvince", json.address[0].state);
+                }
+                if(json.address[0] != null && json.address[0].postalCode != null) {
+                    map.put("postalCode", json.address[0].postalCode);
+                }
+                if(json.address[0] != null && json.address[0].line[0] != null) {
+                    map.put("postalAddress", json.address[0].line[0]);
+                }
+                if(json.address[0] != null && json.address[0].country != null) {
+                    map.put("country", json.address[0].country);
+                }
 
                 
                 handler {

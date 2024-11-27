@@ -27,6 +27,7 @@ import org.identityconnectors.framework.common.objects.AttributesAccessor
 import org.identityconnectors.framework.common.objects.ObjectClass
 import org.identityconnectors.framework.common.objects.OperationOptions
 import org.identityconnectors.framework.common.objects.Uid
+import org.identityconnectors.common.security.SecurityUtil
 
 def operation = operation as OperationType
 def updateAttributes = new AttributesAccessor(attributes as Set<Attribute>)
@@ -44,7 +45,7 @@ def uid = uid as Uid
 log.error("Entering " + operation + " Script");
 
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
-def up = customConfig.username + ":" + customConfig.password
+def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
 def bauth = up.getBytes().encodeBase64()
 
 log.error("uid:" + uid)

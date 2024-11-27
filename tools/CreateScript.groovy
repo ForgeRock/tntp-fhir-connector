@@ -20,7 +20,7 @@ import org.identityconnectors.framework.common.objects.ObjectClass
 import org.identityconnectors.framework.common.objects.OperationOptions
 import java.util.Iterator
 import java.util.HashMap
-
+import org.identityconnectors.common.security.SecurityUtil
 import static groovyx.net.http.Method.POST
 import static groovyx.net.http.Method.PUT
 
@@ -39,7 +39,7 @@ log.error(logPrefix + "Entering " + operation + " Script");
 def createAttributes = new AttributesAccessor(attributes as Set<Attribute>)
 
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
-def up = customConfig.username + ":" + customConfig.password
+def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
 def bauth = up.getBytes().encodeBase64()
 
 switch (objectClass) {

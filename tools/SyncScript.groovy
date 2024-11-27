@@ -19,6 +19,8 @@ import org.identityconnectors.framework.common.objects.SyncToken
 import org.identityconnectors.framework.common.exceptions.ConnectorException
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.GET
+import org.identityconnectors.common.security.SecurityUtil
+
 def operation = operation as OperationType
 def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
@@ -27,7 +29,7 @@ def log = log as Log
 def logPrefix = "[FHIR] [SyncScript]: "
 def objectClass = objectClass as ObjectClass
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
-def up = customConfig.username + ":" + customConfig.password
+def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
 def bauth = up.getBytes().encodeBase64()
 log.error("syncing")
 log.error("Entering " + operation + " Script");
