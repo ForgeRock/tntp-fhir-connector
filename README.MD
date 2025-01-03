@@ -123,6 +123,7 @@ After creating the connector, set these configurations:
 
 ## Basic mappings
 
+![ScreenShot](./images/mappings.png)
 <!-- SUPPORT -->
 
 ## Support
