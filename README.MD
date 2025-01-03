@@ -121,6 +121,8 @@ After creating the connector, set these configurations:
 
 </table>
 
+## Basic mappings
+
 <!-- SUPPORT -->
 
 ## Support
