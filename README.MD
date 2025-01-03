@@ -26,7 +26,7 @@ Once Java RCS openicf is downloaded, create a tools directory in the openicf dir
 
 There are also 3 libraries that need to be installed. These are called secrets-api, chf-http-core, and json-web-token. These can be installed in the /lib/framework directory of openicf.
 
-For on prem installation, follow these steps here: https://docs.pingidentity.com/pingidm/7.2/connector-reference/configure-connector.html#connector-wiz-REST.
+For on prem installation, follow these steps here: https://docs.pingidentity.com/pingidm/7.5/connector-reference/configure-connector.html#connector-wiz-REST.
 
 ## Configurations
 
