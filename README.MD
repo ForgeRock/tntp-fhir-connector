@@ -39,7 +39,7 @@ After creating the connector, set these configurations:
 </thead>
 <tr>
     <td>Service Address</td>
-    <td>https://fhir.epic.com</td>
+    <td>${SmileCDR URL}</td>
 </tr>
 <tr>
     <td>Proxy Address</td>
@@ -47,11 +47,11 @@ After creating the connector, set these configurations:
 </tr>
 <tr>
     <td>Username</td>
-    <td>Any string</td>
+    <td>${Basic Auth Username}</td>
 </tr>
 <tr>
     <td>Password</td>
-    <td>Any string</td>
+    <td>${Basic Auth password}</td>
 </tr>
 <tr>
     <td>Default Content Type</td>
@@ -68,10 +68,6 @@ After creating the connector, set these configurations:
 <tr>
     <td>Custom Sensitive Configuration</td>
     <td></td>
-</tr>
-<tr>
-    <td>customConfiguration</td>
-    <td>config { groupId = ''; iss = ''; sub=''; aud = ''; clientId=''; key='{jwk}'}</td>
 </tr>
 <tr>
     <td>Script Roots</td>
