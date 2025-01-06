@@ -24,7 +24,7 @@ Install and setup the Java RCS: https://backstage.forgerock.com/docs/openicf/lat
 
 Once Java RCS openicf is downloaded, create a tools directory in the openicf directory. Place these groovy scripts in this tools directory.
 
-There are also 3 libraries that need to be installed. These are called secrets-api, chf-http-core, and json-web-token. These can be installed in the /lib/framework directory of openicf.
+There are also 3 libraries that need to be installed. These are called secrets-api, chf-http-core, and json-web-token. These can be installed in the /lib/framework directory of openicf. These jar files can be found by installing the latest of openidm, and finding those dependncies in the openidm/bundle folder. OpenIDM installation can be found here: https://backstage.forgerock.com/downloads/browse/idm/featured
 
 For on prem installation, follow these steps here: https://docs.pingidentity.com/pingidm/7.2/connector-reference/configure-connector.html#connector-wiz-REST.
 
