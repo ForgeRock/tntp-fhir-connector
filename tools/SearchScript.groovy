@@ -153,7 +153,7 @@ if (filter != null) {
             assert resp.status == 200
             telephoneNumber = null;
             email = null;
-            if(json.link[1].relation && json.link[1].relation == "next") {
+            if(json.link[1] && json.link[1].relation && json.link[1].relation == "next") {
                 next = json.link[1].url
 
             } else {
