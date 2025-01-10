@@ -35,15 +35,15 @@ idAIB.setCreateable(true);
 idAIB.setMultiValued(false);
 idAIB.setUpdateable(false);
 
-// userName
+// departmentId
 def departmentIDAIB = new AttributeInfoBuilder("departmentID", String.class);
 departmentIDAIB.setMultiValued(false);
 
-// displayName
+// departmentIdType
 def departmentIDTypeAIB = new AttributeInfoBuilder("departmentIDType", String.class);
 departmentIDTypeAIB.setMultiValued(false);
 
-// familyName
+// nationalIdentifier
 def nationalIdentifierAIB = new AttributeInfoBuilder("nationalIdentifier", String.class);
 nationalIdentifierAIB.setMultiValued(false);
 
@@ -51,11 +51,11 @@ nationalIdentifierAIB.setMultiValued(false);
 def dateOfBirthAIB = new AttributeInfoBuilder("dateOfBirth", String.class);
 dateOfBirthAIB.setMultiValued(false);
 
-// telephoneNumber
+// gender
 def genderAIB = new AttributeInfoBuilder("gender", String.class);
 genderAIB.setMultiValued(false);
 
-// emailAddress
+// marital status
 def maritalStatusAIB = new AttributeInfoBuilder("maritalStatus", String.class);
 maritalStatusAIB.setMultiValued(false);
 
@@ -63,7 +63,7 @@ maritalStatusAIB.setMultiValued(false);
 def raceAIB = new AttributeInfoBuilder("race", String.class);
 raceAIB.setMultiValued(false);
 
-//created
+//religion
 def religionAIB = new AttributeInfoBuilder("religion", String.class);
 religionAIB.setMultiValued(false);
 
@@ -71,41 +71,46 @@ religionAIB.setMultiValued(false);
 def nameAIB = new AttributeInfoBuilder("name", String.class);
 nameAIB.setMultiValued(false);
 
-// Name
+// address
 def addressAIB = new AttributeInfoBuilder("address", Map.class);
 addressAIB.setMultiValued(false);
 
-// dob
+// telephone number
 def telephoneNumberAIB = new AttributeInfoBuilder("telephoneNumber", String.class);
 telephoneNumberAIB.setMultiValued(false);
 
-// dob
+// sn
 def snAIB = new AttributeInfoBuilder("sn", String.class);
 snAIB.setMultiValued(false);
 
-// dob
+// givenname
 def givenNameAIB = new AttributeInfoBuilder("givenName", String.class);
 givenNameAIB.setMultiValued(false);
 
-// dob
+// postal address
 def postalAddressAIB = new AttributeInfoBuilder("postalAddress", String.class);
 postalAddressAIB.setMultiValued(false);
 
-// dob
+// state
 def stateProvinceAIB = new AttributeInfoBuilder("stateProvince", String.class);
 stateProvinceAIB.setMultiValued(false);
 
-// dob
+// city
 def cityAIB = new AttributeInfoBuilder("city", String.class);
 cityAIB.setMultiValued(false);
 
-// dob
+// postal code
 def postalCodeAIB = new AttributeInfoBuilder("postalCode", String.class);
 postalCodeAIB.setMultiValued(false);
 
-// dob
+// country
 def countryAIB = new AttributeInfoBuilder("country", String.class);
 countryAIB.setMultiValued(false);
+
+//zip code
+def email = new AttributeInfoBuilder("email", String.class);
+email.setMultiValued(false);
+
 
 return builder.schema({
     objectClass {
@@ -129,7 +134,8 @@ return builder.schema({
         attribute cityAIB.build()
         attribute stateProvinceAIB.build()
         attribute countryAIB.build()
+        attribute email.build()
     }
 })
 
-log.info(logPrefix + "Schema script done");
+log.error(logPrefix + "Schema script dones");
