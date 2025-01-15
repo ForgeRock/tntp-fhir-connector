@@ -49,7 +49,6 @@ def bauth = up.getBytes().encodeBase64()
 
 if (filter != null) {
     def uuid = FrameworkUtil.getUidIfGetOperation(filter)
-    log.error(uuid.uidValue)
     if (uuid != null) {
         // Get user
         def special = configuration.getPropertyBag().get(uuid.uidValue)
@@ -130,6 +129,7 @@ if (filter != null) {
                     attributes ScriptedRESTUtils.MapToAttributes(map, [], false, false)
                     
                 }
+                return new org.identityconnectors.framework.common.objects.SearchResult()
             }
 
             response.failure = { resp, json ->
