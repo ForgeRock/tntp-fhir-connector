@@ -48,7 +48,6 @@ def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
 def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
 def bauth = up.getBytes().encodeBase64()
 
-log.error("uid:" + uid)
 switch (operation) {
     case OperationType.UPDATE:
         def builder = new JsonBuilder()
