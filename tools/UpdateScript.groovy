@@ -41,30 +41,30 @@ import static groovyx.net.http.Method.PUT
 def options = options as OperationOptions
 def uid = uid as Uid
 
-// log.error("Entering " + operation + " Script");
+log.error("Entering " + operation + " Script");
 
-// log.error("uid:" + uid)
-// switch (operation) {
-//     case OperationType.UPDATE:
-//         def builder = new JsonBuilder()
-//         switch (objectClass) {
-//             case ObjectClass.ACCOUNT:
-//                 def dob = ""
-//                 log.error(dob)
-//                 def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
-//                 connection.request(PUT, JSON) { req ->
-//                     uri.path = "/fhir/Patient/" +uid
-//                     body = jsonString
+log.error("uid:" + uid)
+switch (operation) {
+    case OperationType.UPDATE:
+        def builder = new JsonBuilder()
+        switch (objectClass) {
+            case ObjectClass.ACCOUNT:
+                def dob = ""
+                log.error(dob)
+                def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
+                connection.request(PUT, JSON) { req ->
+                    uri.path = "/fhir/Patient/" +uid
+                    body = jsonString
 
-//                     response.success = { resp, json ->
-//                         return json.id
-//                     }
-//                 }
-//             default:
-//                 throw new ConnectorException("UpdateScript can not handle object type: " + objectClass.objectClassValue)
-//         }
-//         break
-//     default:
-//         throw new ConnectorException("UpdateScript can not handle operation:" + operation.name())
-// }
-// return uid
+                    response.success = { resp, json ->
+                        return json.id
+                    }
+                }
+            default:
+                throw new ConnectorException("UpdateScript can not handle object type: " + objectClass.objectClassValue)
+        }
+        break
+    default:
+        throw new ConnectorException("UpdateScript can not handle operation:" + operation.name())
+}
+return uid
