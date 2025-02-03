@@ -53,6 +53,7 @@ switch (operation) {
         def builder = new JsonBuilder()
         switch (objectClass) {
             case ObjectClass.ACCOUNT:
+                HashMap hm = new HashMap();
                 def dob = hm.get("dateOfBirth");
                 dob = dob.get(0)
                 log.error(dob)
