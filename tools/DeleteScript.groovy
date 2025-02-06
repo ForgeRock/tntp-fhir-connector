@@ -24,12 +24,13 @@ import org.identityconnectors.framework.common.objects.OperationOptions
 import org.identityconnectors.framework.common.objects.Uid
 import org.forgerock.openicf.connectors.scriptedrest.SimpleCRESTFilterVisitor
 import org.identityconnectors.common.security.SecurityUtil
+import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
 
 def operation = operation as OperationType
 def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
-def log = log as Log
+def log = Log.getLog(ScriptedRESTConnector.class) 
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def uid = uid as Uid
