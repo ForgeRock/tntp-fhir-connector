@@ -1,9 +1,9 @@
 /*
- * This code is to be used exclusively in connection with Ping Identity Corporation software or services. 
- * Ping Identity Corporation only offers such software or services to legal entities who have entered into 
- * a binding license agreement with Ping Identity Corporation.
+ * Copyright 2014-2020 ForgeRock AS. All Rights Reserved
  *
- * Copyright 2024 Ping Identity Corporation. All Rights Reserved
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
  */
 
 
@@ -22,14 +22,32 @@ import org.identityconnectors.common.logging.Log
 import org.identityconnectors.framework.common.objects.ObjectClass
 import org.identityconnectors.framework.common.objects.OperationOptions
 import org.identityconnectors.framework.common.objects.Uid
+import org.forgerock.openicf.connectors.scriptedrest.SimpleCRESTFilterVisitor
+import org.identityconnectors.common.security.SecurityUtil
+import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
 
 def operation = operation as OperationType
 def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
-def log = log as Log
+def log = Log.getLog(ScriptedRESTConnector.class) 
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def uid = uid as Uid
 
-log.info("Entering " + operation + " Script")
+def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
+def bauth = up.getBytes().encodeBase64()
+log.error("Entering " + operation + " Delete Script")
+
+log.error("uid:" + uid.uidValue)
+switch (objectClass) {
+    case ObjectClass.ACCOUNT:
+        connection.request(DELETE) { req ->
+            uri.path = "/fhir/Patient/" +uid.uidValue
+            headers.'Authorization' = "Basic " + bauth
+            response.success = { resp, json ->
+                assert resp.status == 200
+            }
+        }
+    break
+}

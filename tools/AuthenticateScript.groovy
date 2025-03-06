@@ -1,9 +1,9 @@
 /*
- * This code is to be used exclusively in connection with Ping Identity Corporation software or services. 
- * Ping Identity Corporation only offers such software or services to legal entities who have entered into 
- * a binding license agreement with Ping Identity Corporation.
+ * Copyright 2014-2018 ForgeRock AS. All Rights Reserved
  *
- * Copyright 2024 Ping Identity Corporation. All Rights Reserved
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
  */
 
 import static groovyx.net.http.Method.GET
@@ -36,4 +36,35 @@ def log = log as Log
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def password = password as Object;
+
+log.error("Entering " + operation + " Script");
+//
+//def authClient = new RESTClient(configuration.serviceAddress, configuration.defaultContentType)
+//authClient.setClient(httpClient)
+//authClient.setHeaders(connection.getHeaders())
+//
+//CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+//credentialsProvider.setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+//        new UsernamePasswordCredentials(username, SecurityUtil.decrypt(password as GuardedString)));
+//
+//return authClient.request(GET) { req ->
+//    uri.path = '/api/users/' + username
+//    uri.query = [
+//            _fields: '_id'
+//    ]
+//    context.setAttribute(HttpClientContext.AUTH_CACHE, new BasicAuthCache())
+//    context.setAttribute(HttpClientContext.CREDS_PROVIDER, credentialsProvider)
+//
+//    response.success = { resp, json ->
+//        return new Uid(json._id)
+//    }
+//
+//    response."401" = { resp, json ->
+//        throw new InvalidCredentialException();
+//    }
+//
+//    response.failure = { resp, json ->
+//        throw new ConnectorSecurityException()
+//    }
+//}
 

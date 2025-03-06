@@ -24,49 +24,9 @@ Install and setup the Java RCS: https://backstage.forgerock.com/docs/openicf/lat
 
 Once Java RCS openicf is downloaded, create a tools directory in the openicf directory. Place these groovy scripts in this tools directory.
 
-There are also 3 libraries that need to be installed. These are called secrets-api, chf-http-core, and json-web-token. These can be installed in the /lib/framework directory of openicf.
+There are also 3 libraries that need to be installed. These are called secrets-api, chf-http-core, and json-web-token. These can be installed in the /lib/framework directory of openicf. These jar files can be found by installing the latest of openidm, and finding those dependncies in the openidm/bundle folder. OpenIDM installation can be found here: https://backstage.forgerock.com/downloads/browse/idm/featured
 
-## Epic Application Setup
-
-Generate a JWK
-You will need a JWKS.  For example purposes, I used https://mkjwk.org/ to generate a JWK.
-Navigate to https://mkjwk.org/
-Use the RSA tab
-Set Key Size to 2048
-Set Key Use to Signature
-Set Algorithm to RS256: RSASSA-PKCS1-v1_5 using SHA-256
-Set Key ID to Timestamp
-Click Generate button
-Save the 
-Public and Private Keypair
-Public Key
-Modify the Public Key to make it a set.  Similar to https://raw.githubusercontent.com/justinchinFR/epic/main/pub.json 
-Save the Public Key set to a public URL, that can be accessed by Epic.
-
-Setup Epic FHIR App
-Login into your Epic FHIR environment.  In this example, that is:
-https://fhir.epic.com/
-Navigate to the Build Apps tab
-Click the + Create button
-Enter an Application Name
-Select Backend Systems for Application Audience
-In the Available column add the following APIs:
-Bulk Data Delete Request
-Bulk Data File Request
-Bulk Data Kick-off
-Bulk Data Status Request
-Patient.$match (R4)
-Patient.Create (R4)
-Patient.Read (R4)
-Patient.Search (R4)
-Add the URL of the Public Key Set created in step 10 above, to the Non-Production JWK Set URL
-
-Click the Save button
-Select SMART on FHIR Version R4
-Add a Summary
-Review and check off I accept the terms of use of open.epic
-Click the Save & Ready for Sandbox button
-
+For on prem installation, follow these steps here: https://docs.pingidentity.com/pingidm/7.2/connector-reference/configure-connector.html#connector-wiz-REST.
 
 ## Configurations
 
@@ -81,7 +41,7 @@ After creating the connector, set these configurations:
 </thead>
 <tr>
     <td>Service Address</td>
-    <td>https://fhir.epic.com</td>
+    <td>${SmileCDR URL}</td>
 </tr>
 <tr>
     <td>Proxy Address</td>
@@ -89,11 +49,11 @@ After creating the connector, set these configurations:
 </tr>
 <tr>
     <td>Username</td>
-    <td>Any string</td>
+    <td>${Basic Auth Username}</td>
 </tr>
 <tr>
     <td>Password</td>
-    <td>Any string</td>
+    <td>${Basic Auth password}</td>
 </tr>
 <tr>
     <td>Default Content Type</td>
@@ -110,10 +70,6 @@ After creating the connector, set these configurations:
 <tr>
     <td>Custom Sensitive Configuration</td>
     <td></td>
-</tr>
-<tr>
-    <td>customConfiguration</td>
-    <td>config { groupId = ''; iss = ''; sub=''; aud = ''; clientId=''; key='{jwk}'}</td>
 </tr>
 <tr>
     <td>Script Roots</td>
@@ -167,6 +123,9 @@ After creating the connector, set these configurations:
 
 </table>
 
+## Basic mappings
+
+![ScreenShot](./images/mappings.png)
 <!-- SUPPORT -->
 
 ## Support

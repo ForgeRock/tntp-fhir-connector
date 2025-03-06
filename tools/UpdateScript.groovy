@@ -1,9 +1,9 @@
 /*
- * This code is to be used exclusively in connection with Ping Identity Corporation software or services. 
- * Ping Identity Corporation only offers such software or services to legal entities who have entered into 
- * a binding license agreement with Ping Identity Corporation.
+ * Copyright 2014-2020 ForgeRock AS. All Rights Reserved
  *
- * Copyright 2024 Ping Identity Corporation. All Rights Reserved
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
  */
 
 
@@ -27,6 +27,7 @@ import org.identityconnectors.framework.common.objects.AttributesAccessor
 import org.identityconnectors.framework.common.objects.ObjectClass
 import org.identityconnectors.framework.common.objects.OperationOptions
 import org.identityconnectors.framework.common.objects.Uid
+import org.identityconnectors.common.security.SecurityUtil
 
 def operation = operation as OperationType
 def updateAttributes = new AttributesAccessor(attributes as Set<Attribute>)
@@ -43,17 +44,28 @@ def uid = uid as Uid
 
 log.error("Entering " + operation + " Script");
 
-log.error("uid:" + uid)
+def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
+def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
+def bauth = up.getBytes().encodeBase64()
+
 switch (operation) {
     case OperationType.UPDATE:
         def builder = new JsonBuilder()
         switch (objectClass) {
             case ObjectClass.ACCOUNT:
-                def dob = ""
+                HashMap hm = new HashMap();
+                def dob = hm.get("dateOfBirth");
+                dob = dob.get(0)
                 log.error(dob)
-                def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
-                connection.request(PUT, JSON) { req ->
-                    uri.path = "/fhir/Patient/" +uid
+                def givenName = hm.get("givenName");
+                givenName = givenName.get(0)
+                log.error(givenName)
+                def sn = hm.get("sn");
+                sn = sn.get(0)
+                def jsonString = "{\"resourceType\":\"Patient\",\"birthDate\":\"${dob}\",\"name\":[{\"family\":\"${sn}\",\"given\":[\"${givenName}\"]}]}"
+                return connection.request(PUT, JSON) { req ->
+                    uri.path = "/fhir/Patient/" + uid
+                    headers.'Authorization' = "Basic " + bauth
                     body = jsonString
 
                     response.success = { resp, json ->
