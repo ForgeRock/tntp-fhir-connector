@@ -7,6 +7,7 @@
  */
 
 import static groovyx.net.http.Method.POST
+import static groovyx.net.http.ContentType.URLENC
 
 import groovyx.net.http.RESTClient
 import org.apache.http.client.HttpClient
@@ -42,6 +43,8 @@ def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def bearer = ""        
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
+def logPrefix = "[Akamai] [SearchScript]: "
+log.error(logPrefix + "Entering " + operation + " Script")
 
 // Build basic auth header
 def up = configuration.getUsername() + ":" + SecurityUtil.decrypt(configuration.getPassword())
@@ -60,38 +63,44 @@ def bauth = up.getBytes().encodeBase64()
 if (filter != null) {
     def uuid = FrameworkUtil.getUidIfGetOperation(filter)
     if (uuid != null) {
+        def uuidValue = uuid.getUidValue()
         // Clean up any cached data for this UID if present
         def special = configuration.getPropertyBag().get(uuid.uidValue)
         if (special != null) {
             configuration.getPropertyBag().remove(uuid.uidValue)
         }
 
-        connection.request(POST, JSON) { req ->
+        Map<String, String> pairs = new HashMap<String, String>();
+        pairs.put("type_name", "user");
+        pairs.put("id", "31617");
+
+        connection.request(POST, URLENC) { req ->
             uri.path = '/entity'
             headers.'Authorization' = "Basic " + bauth
             headers.'Content-Type' = "application/x-www-form-urlencoded"
-            body = [ type_name: "user", id: uuid.uidValue ]
-            log.error(body)
+            body = pairs
             log.error("Searching Akamai Identity Cloud for user profile...")
             
             response.success = { resp, json ->
                 assert resp.status == 200
-                def telephoneNumber = json.result.primaryAddress.phone ?: null
-                def email = json.result.email ?: null
+                log.error("Search Success")
+                // def telephoneNumber = json.result.primaryAddress.phone ?: null
+                // def email = json.result.email ?: null
                 Map<String, Object> map = new LinkedHashMap<>()
                 if (json.result.givenName) { map.put("givenName", json.result.givenName) }
                 if (json.result.familyName) { map.put("familyName", json.result.familyName) }
-                if (json.result.birthday) { map.put("birthday", json.result.birthday) }
-                if (json.result.gender) { map.put("gender", json.result.gender) }
-                if (telephoneNumber) { map.put("telephoneNumber", telephoneNumber) }
-                if (email) { map.put("email", email) }
-                if (json.primaryAddress) {
-                    map.put("city", json.result.primaryAddress.city)
-                    map.put("state", json.result.primaryAddress.stateAbbreviation)
-                    map.put("postalCode", json.result.primaryAddress.zip)
-                    map.put("country", json.result.primaryAddress.country)
-                    map.put("postalAddress", json.result.primaryAddress.address1)
-                }
+                if (json.result.displayName) { map.put("userName", json.result.displayName) }
+                if (json.result.email) { map.put("mail", json.result.email) }
+                // if (json.result.birthday) { map.put("birthday", json.result.birthday) }
+                // if (json.result.gender) { map.put("gender", json.result.gender) }
+                // if (telephoneNumber) { map.put("telephoneNumber", telephoneNumber) }
+                // if (json.result.primaryAddress) {
+                //     map.put("city", json.result.primaryAddress.city)
+                //     map.put("state", json.result.primaryAddress.stateAbbreviation)
+                //     map.put("postalCode", json.result.primaryAddress.zip)
+                //     map.put("country", json.result.primaryAddress.country)
+                //     map.put("postalAddress", json.result.primaryAddress.address1)
+                // }
 
                 handler {
                     uid json.result.id
@@ -106,6 +115,64 @@ if (filter != null) {
                 if (resp.status > 400 && resp.status != 404) {
                     throw new ConnectorException("View profile request failed")
                 }
+            }
+        }
+    }
+/**
+* ================================
+* LIST ALL PATIENTS (No Filter Provided)
+* ================================
+*
+* When no filter is provided,
+*   - 1st:  The script performs a list operation by querying the /fhir/Patient endpoint. 
+*   - 2nd:  It processes the initial response to capture a pagination URL (if available) 
+*   - 3rd:  Iterates through pages (up to 10 pages) to retrieve and process all patient entries, passing each to the handler.
+*
+*/
+} else {
+    connection.request(POST, JSON) { req ->
+        uri.path = '/entity.find'
+        headers.'Authorization' = "Basic " + bauth
+        headers.'Content-Type' = "application/x-www-form-urlencoded"
+        body = [ type_name: "user" ]
+        log.error(body)
+        log.error("Searching Akamai Identity Cloud for user profile...")
+            
+        response.success = { resp, json ->
+            assert resp.status == 200
+
+            json.results.each { item ->
+                Map<String, Object> map = new LinkedHashMap<>();
+                if(item.displayName != null) {
+                    map.put("displayName", item.displayName)
+                }
+                if(item.email != null) {
+                    map.put("email", item.email)
+                }
+                if(item.givenName != null) {
+                    map.put("givenName", item.givenName)
+                }
+                if(item.familyName != null) {
+                    map.put("familyName", item.familyName);
+                }
+                if(item.birthday != null) {
+                    map.put("birthday", item.birthday);
+                }
+                if(item.gender != null) {
+                    map.put("gender", item.gender);
+                }
+                handler {
+                    uid item.id
+                    id item.id
+                    attributes ScriptedRESTUtils.MapToAttributes(map, [], false, false)
+                }
+            }
+        }
+        
+        response.failure = { resp, json ->
+            log.error "Akamai API request failed with status: " + resp.status
+            if (resp.status > 400 && resp.status != 404) {
+                throw new ConnectorException("View profile request failed")
             }
         }
     }
@@ -141,62 +208,62 @@ if (filter != null) {
 //             } else {
 //                 next = null;
 //             }
-//             json.entry.each { item ->
-//                 telephoneNumber = null;
-//                 email = null;
-//
-//                 for(def i = 0; item.resource.telecom != null && i < item.resource.telecom.size(); i++) {
-//                     if(item.resource.telecom[i].system == "email") {
-//                         email = item.resource.telecom[i].value;
-//                     }
-//                     if(item.resource.telecom[i].system == "phone") {
-//                         telephoneNumber = item.resource.telecom[i].value;
-//                     }
-//                 }
-//                 Map<String, Object> map = new LinkedHashMap<>();
-//                 if(item.resource.name != null && item.resource.name[0].given[0] != null) {
-//                     map.put("givenName", item.resource.name[0].given[0])
-//                 }
-//                 if(item.resource.name != null && item.resource.name[0].family != null) {
-//                     map.put("sn", item.resource.name[0].family);
-//                 }
-//                 if(item.resource.birthDate != null) {
-//                     map.put("dateOfBirth", item.resource.birthDate);
-//                 }
-//                 if(item.resource.gender != null) {
-//                     map.put("gender", item.resource.gender);
-//                 }
-//                 if(telephoneNumber != null) {
-//                     map.put("telephoneNumber", telephoneNumber)
-//                 }
-//                 if(email != null) {
-//                     map.put("email", email)
-//                 }
-//                 if(item.resource.address != null && item.resource.address[0].city != null) {
-//                     map.put("city", item.resource.address[0].city);
-//                 }
-//                 if(item.resource.address != null && item.resource.address[0].state != null) {
-//                     map.put("state", item.resource.address[0].state);
-//                 }
-//                 if(item.resource.address != null && item.resource.address[0].state != null) {
-//                     map.put("stateProvince", item.resource.address[0].state);
-//                 }
-//                 if(item.resource.address != null && item.resource.address[0].postalCode != null) {
-//                     map.put("postalCode", item.resource.address[0].postalCode);
-//                 }
-//                 if(item.resource.address != null && item.resource.address[0].line[0] != null) {
-//                     map.put("postalAddress", item.resource.address[0].line[0]);
-//                 }
-//                 if(item.resource.address != null && item.resource.address[0].country != null) {
-//                     map.put("country", item.resource.address[0].country);
-//                 }
-//                 handler {
-//                     uid item.resource.id
-//                     id item.resource.id
-//                     attributes ScriptedRESTUtils.MapToAttributes(map, [], false, false)
-//                 }
-//             }
-//         }
+        //     json.entry.each { item ->
+        //         telephoneNumber = null;
+        //         email = null;
+
+        //         for(def i = 0; item.resource.telecom != null && i < item.resource.telecom.size(); i++) {
+        //             if(item.resource.telecom[i].system == "email") {
+        //                 email = item.resource.telecom[i].value;
+        //             }
+        //             if(item.resource.telecom[i].system == "phone") {
+        //                 telephoneNumber = item.resource.telecom[i].value;
+        //             }
+        //         }
+        //         Map<String, Object> map = new LinkedHashMap<>();
+        //         if(item.resource.name != null && item.resource.name[0].given[0] != null) {
+        //             map.put("givenName", item.resource.name[0].given[0])
+        //         }
+        //         if(item.resource.name != null && item.resource.name[0].family != null) {
+        //             map.put("sn", item.resource.name[0].family);
+        //         }
+        //         if(item.resource.birthDate != null) {
+        //             map.put("dateOfBirth", item.resource.birthDate);
+        //         }
+        //         if(item.resource.gender != null) {
+        //             map.put("gender", item.resource.gender);
+        //         }
+        //         if(telephoneNumber != null) {
+        //             map.put("telephoneNumber", telephoneNumber)
+        //         }
+        //         if(email != null) {
+        //             map.put("email", email)
+        //         }
+        //         if(item.resource.address != null && item.resource.address[0].city != null) {
+        //             map.put("city", item.resource.address[0].city);
+        //         }
+        //         if(item.resource.address != null && item.resource.address[0].state != null) {
+        //             map.put("state", item.resource.address[0].state);
+        //         }
+        //         if(item.resource.address != null && item.resource.address[0].state != null) {
+        //             map.put("stateProvince", item.resource.address[0].state);
+        //         }
+        //         if(item.resource.address != null && item.resource.address[0].postalCode != null) {
+        //             map.put("postalCode", item.resource.address[0].postalCode);
+        //         }
+        //         if(item.resource.address != null && item.resource.address[0].line[0] != null) {
+        //             map.put("postalAddress", item.resource.address[0].line[0]);
+        //         }
+        //         if(item.resource.address != null && item.resource.address[0].country != null) {
+        //             map.put("country", item.resource.address[0].country);
+        //         }
+        //         handler {
+        //             uid item.resource.id
+        //             id item.resource.id
+        //             attributes ScriptedRESTUtils.MapToAttributes(map, [], false, false)
+        //         }
+        //     }
+        // }
 //
 //         response.failure = { resp, json ->
 //             log.error 'request failed'

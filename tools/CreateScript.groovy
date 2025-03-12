@@ -8,6 +8,7 @@
 
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.POST
+import static groovyx.net.http.ContentType.URLENC
 
 import groovy.json.JsonBuilder
 import groovyx.net.http.RESTClient
@@ -32,6 +33,7 @@ def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def logPrefix = "[Akamai] [CreateScript]: "
 log.error(logPrefix + "Entering " + operation + " Script")
+
 def createAttributes = new AttributesAccessor(attributes as Set<Attribute>)
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
 
@@ -62,26 +64,28 @@ switch (objectClass) {
             email: email
         ]
         def jsonAttributes = new JsonBuilder(attributesMap).toString()
-        log.error(logPrefix + "JSON Attributes: " + jsonAttributes)
+        log.error("JSON Attributes: {0}", new Object[]{jsonAttributes})
+
+        Map<String, String> pairs = new HashMap<String, String>();
+        pairs.put("type_name", "user");
+        pairs.put("attributes", jsonAttributes);
+        // pairs.put("attributes", '{"givenName":"Joe", "familyName":"Doe", "email":"joe@test.com"}');
 
         try {
-            return connection.request(POST, JSON) { req ->
+            return connection.request(POST, URLENC) { req ->
                 uri.path = "/entity.create"
                 headers.'Authorization' = "Basic " + bauth
                 headers.'Content-Type' = "application/x-www-form-urlencoded"
-                body = [
-                    type_name: "user",
-                    attributes: jsonAttributes
-                ]
+                body = pairs
                 
                 response.success = { resp, json ->
-                    log.error(logPrefix + "User profile created successfully: " + json)
-                    return json
+                    log.error(logPrefix + "User profile created successfully")
+                    log.error(logPrefix + "RESPONSE ID: " + json.result.id)
+                    return json.id.toString()
                 }
             }
         } catch (Exception ex) {
             log.error(logPrefix + "Exception occurred during create: " + ex)
-            println ex
         }
         break
 }
