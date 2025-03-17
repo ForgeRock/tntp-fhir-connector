@@ -11,6 +11,7 @@ import static groovyx.net.http.Method.POST
 import static groovyx.net.http.ContentType.URLENC
 
 import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import groovyx.net.http.RESTClient
 import org.apache.http.client.HttpClient
 import org.forgerock.openicf.connectors.groovy.OperationType
@@ -55,7 +56,7 @@ switch (objectClass) {
         // Extract necessary fields
         def givenName = hm.get("givenName") ? hm.get("givenName").get(0) : ""
         def familyName = hm.get("sn") ? hm.get("sn").get(0) : ""
-        def email = hm.get("email") ? hm.get("email").get(0) : ""
+        def email = hm.get("mail") ? hm.get("mail").get(0) : ""
 
         // Build the attributes
         def attributesMap = [
@@ -68,8 +69,9 @@ switch (objectClass) {
 
         Map<String, String> pairs = new HashMap<String, String>();
         pairs.put("type_name", "user");
-        pairs.put("attributes", jsonAttributes);
-        // pairs.put("attributes", '{"givenName":"Joe", "familyName":"Doe", "email":"joe@test.com"}');
+        // pairs.put("attributes", jsonAttributes);
+        pairs.put("attributes", '{"givenName":"Matt1", "familyName":"Teets1", "email":"matt1@test.com"}');
+        log.error("Pairs: {0}", new Object[]{pairs})
 
         try {
             return connection.request(POST, URLENC) { req ->
@@ -80,8 +82,13 @@ switch (objectClass) {
                 
                 response.success = { resp, json ->
                     log.error(logPrefix + "User profile created successfully")
-                    log.error(logPrefix + "RESPONSE ID: " + json.result.id)
-                    return json.id.toString()
+                    log.error("CREATE - RAW JSON Response: {0}", new Object[]{json})
+
+                    def parsed = new JsonSlurper().parseText(json.keySet().toArray()[0])
+                    log.error("CREATE - JSON String: " + parsed)
+                    def json_id = parsed.id
+
+                    return json_id.toString()
                 }
             }
         } catch (Exception ex) {
