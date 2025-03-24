@@ -13,9 +13,9 @@
  *
  * Copyright 2022 ForgeRock AS.
 -->
-# FHIR connector
+# Akamai connector
 
-FHIR connector for connecting with the FHIR APIs. 
+Akamai connector for connecting with the Akamai APIs.
 
 
 ## Setup
@@ -41,7 +41,7 @@ After creating the connector, set these configurations:
 </thead>
 <tr>
     <td>Service Address</td>
-    <td>${SmileCDR URL}</td>
+    <td>${Akamai Tenant URL}</td>
 </tr>
 <tr>
     <td>Proxy Address</td>
@@ -119,13 +119,15 @@ After creating the connector, set these configurations:
     <td>Customizer Script</td>
     <td>CustomizerScript.groovy</td>
 </tr>
-
-
 </table>
 
 ## Basic mappings
 
-![ScreenShot](./images/mappings.png)
+To map users from Akamai to PingIDM using the Native PingIDM UI, navigate to Native Consoles > Identity Management. Under the Configure tab, select Mappings, and create a new mapping. Choose the Scripted REST Connector as the source and select the desired User Managed Object as the target.
+
+After creating the mapping from Akamai to PingIDM, set these property configurations:
+
+![ScreenShot](./images/example_mappings.png)
 <!-- SUPPORT -->
 
 ## Support
