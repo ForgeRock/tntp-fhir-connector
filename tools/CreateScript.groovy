@@ -23,6 +23,7 @@ import java.util.HashMap
 import org.identityconnectors.common.security.SecurityUtil
 import static groovyx.net.http.Method.POST
 import static groovyx.net.http.Method.PUT
+import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
 
 def operation = operation as OperationType
 
@@ -30,7 +31,7 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def name = id as String
-def log = log as Log
+def log = Log.getLog(ScriptedRESTConnector.class) 
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 

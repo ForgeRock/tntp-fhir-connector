@@ -10,7 +10,7 @@
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.GET
 import static groovyx.net.http.Method.PUT
-
+import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
 import org.identityconnectors.framework.common.exceptions.InvalidCredentialException
 import org.identityconnectors.framework.common.exceptions.PermissionDeniedException
 import org.identityconnectors.framework.common.exceptions.UnknownUidException
@@ -35,7 +35,7 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def name = id as String
-def log = log as Log
+def log = Log.getLog(ScriptedRESTConnector.class) 
 def objectClass = objectClass as ObjectClass
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.PUT

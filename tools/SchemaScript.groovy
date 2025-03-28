@@ -10,7 +10,7 @@
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.NOT_READABLE
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.NOT_RETURNED_BY_DEFAULT
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.NOT_UPDATEABLE
-
+import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
 import groovyx.net.http.RESTClient
 import org.apache.http.client.HttpClient
 import org.forgerock.openicf.connectors.groovy.OperationType
@@ -23,8 +23,8 @@ def operation = operation as OperationType
 def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
-def log = log as Log
-def logPrefix = "[Epic] [SchemaScript]: "
+def log = Log.getLog(ScriptedRESTConnector.class) 
+def logPrefix = "[FHIR] [SchemaScript]: "
 
 log.info(logPrefix + "Entering " + operation + " Script!");
 

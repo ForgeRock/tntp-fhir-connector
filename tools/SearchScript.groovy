@@ -8,7 +8,7 @@
 
 
 import static groovyx.net.http.Method.GET
-
+import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
 import groovyx.net.http.RESTClient
 import org.apache.http.client.HttpClient
 import org.forgerock.openicf.connectors.groovy.OperationType
@@ -37,7 +37,7 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def filter = filter as Filter
-def log = log as Log
+def log = Log.getLog(ScriptedRESTConnector.class) 
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 def bearer = ""
