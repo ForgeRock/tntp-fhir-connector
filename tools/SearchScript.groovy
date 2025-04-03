@@ -74,53 +74,7 @@ if (filter != null) {
                 log.error 'request was successful'
                 log.error resp.contentType
                 log.error json.resourceType
-                telephoneNumber = null;
-                email = null;
-                for(def i = 0; json.telecom != null && i < json.telecom.size(); i++) {
-                    if(json.telecom[i].system == "email") {
-                        email = json.telecom[i].value;
-                    }
-                    if(json.telecom[i].system == "phone") {
-                        telephoneNumber = json.telecom[i].value;
-                    }
-                }
-                Map<String, Object> map = new LinkedHashMap<>();
-                if(json.name != null && json.name[0].given[0] != null) {
-                    map.put("givenName", json.name[0].given[0])
-                }
-                if(json.name != null && json.name[0].family != null) {
-                    map.put("sn", json.name[0].family);
-                }
-                if(json.birthDate != null) {
-                    map.put("dateOfBirth", json.birthDate);
-                }
-                if(json.gender != null) {
-                    map.put("gender", json.gender);
-                }
-                if(telephoneNumber != null) {
-                    map.put("telephoneNumber", telephoneNumber)
-                }
-                if(email != null) {
-                    map.put("email", email)
-                }
-                if(json.address != null && json.address[0].city != null) {
-                    map.put("city", json.address[0].city);
-                }
-                if(json.address != null && json.address[0].state != null) {
-                    map.put("state", json.address[0].state);
-                }
-                if(json.address != null && json.address[0].state != null) {
-                    map.put("stateProvince", json.address[0].state);
-                }
-                if(json.address != null && json.address[0].postalCode != null) {
-                    map.put("postalCode", json.address[0].postalCode);
-                }
-                if(json.address != null && json.address[0].line[0] != null) {
-                    map.put("postalAddress", json.address[0].line[0]);
-                }
-                if(json.address != null && json.address[0].country != null) {
-                    map.put("country", json.address[0].country);
-                }
+                def map = json
 
                 
                 handler {
@@ -160,53 +114,7 @@ if (filter != null) {
                 next = null;
             }
             json.entry.each { item ->
-                telephoneNumber = null;
-                email = null;
-                for(def i = 0; item.resource.telecom != null && i < item.resource.telecom.size(); i++) {
-                    if(item.resource.telecom[i].system == "email") {
-                        email = item.resource.telecom[i].value;
-                    }
-                    if(item.resource.telecom[i].system == "phone") {
-                        telephoneNumber = item.resource.telecom[i].value;
-                    }
-                }
-                Map<String, Object> map = new LinkedHashMap<>();
-                if(item.resource.name != null && item.resource.name[0].given[0] != null) {
-                    map.put("givenName", item.resource.name[0].given[0])
-                }
-                if(item.resource.name != null && item.resource.name[0].family != null) {
-                    map.put("sn", item.resource.name[0].family);
-                }
-                if(item.resource.birthDate != null) {
-                    map.put("dateOfBirth", item.resource.birthDate);
-                }
-                if(item.resource.gender != null) {
-                    map.put("gender", item.resource.gender);
-                }
-                if(telephoneNumber != null) {
-                    map.put("telephoneNumber", telephoneNumber)
-                }
-                if(email != null) {
-                    map.put("email", email)
-                }
-                if(item.resource.address != null && item.resource.address[0].city != null) {
-                    map.put("city", item.resource.address[0].city);
-                }
-                if(item.resource.address != null && item.resource.address[0].state != null) {
-                    map.put("state", item.resource.address[0].state);
-                }
-                if(item.resource.address != null && item.resource.address[0].state != null) {
-                    map.put("stateProvince", item.resource.address[0].state);
-                }
-                if(item.resource.address != null && item.resource.address[0].postalCode != null) {
-                    map.put("postalCode", item.resource.address[0].postalCode);
-                }
-                if(item.resource.address != null && item.resource.address[0].line[0] != null) {
-                    map.put("postalAddress", item.resource.address[0].line[0]);
-                }
-                if(item.resource.address != null && item.resource.address[0].country != null) {
-                    map.put("country", item.resource.address[0].country);
-                }
+                def map = item.resource
 
                 handler {
                     uid item.resource.id
@@ -260,53 +168,7 @@ if (filter != null) {
                     next = null;
                 }
                 json.entry.each { item ->
-                    telephoneNumber = null;
-                    email = null;
-                    for(def i = 0; item.resource.telecom != null && i < item.resource.telecom.size(); i++) {
-                        if(item.resource.telecom[i].system == "email") {
-                            email = item.resource.telecom[i].value;
-                        }
-                        if(item.resource.telecom[i].system == "phone") {
-                            telephoneNumber = item.resource.telecom[i].value;
-                        }
-                    }
-                    Map<String, Object> map = new LinkedHashMap<>();
-                    if(item.resource.name != null && item.resource.name[0].given[0] != null) {
-                        map.put("givenName", item.resource.name[0].given[0])
-                    }
-                    if(item.resource.name != null && item.resource.name[0].family != null) {
-                        map.put("sn", item.resource.name[0].family);
-                    }
-                    if(item.resource.birthDate != null) {
-                        map.put("dateOfBirth", item.resource.birthDate);
-                    }
-                    if(item.resource.gender != null) {
-                        map.put("gender", item.resource.gender);
-                    }
-                    if(telephoneNumber != null) {
-                        map.put("telephoneNumber", telephoneNumber)
-                    }
-                    if(email != null) {
-                        map.put("email", email)
-                    }
-                    if(item.resource.address != null && item.resource.address[0].city != null) {
-                        map.put("city", item.resource.address[0].city);
-                    }
-                    if(item.resource.address != null && item.resource.address[0].state != null) {
-                        map.put("state", item.resource.address[0].state);
-                    }
-                    if(item.resource.address != null && item.resource.address[0].state != null) {
-                        map.put("stateProvince", item.resource.address[0].state);
-                    }
-                    if(item.resource.address != null && item.resource.address[0].postalCode != null) {
-                        map.put("postalCode", item.resource.address[0].postalCode);
-                    }
-                    if(item.resource.address != null && item.resource.address[0].line[0] != null) {
-                        map.put("postalAddress", item.resource.address[0].line[0]);
-                    }
-                    if(item.resource.address != null && item.resource.address[0].country != null) {
-                        map.put("country", item.resource.address[0].country);
-                    }
+                    def map = item.resource
                     handler {
                         uid item.resource.id
                         id item.resource.id
