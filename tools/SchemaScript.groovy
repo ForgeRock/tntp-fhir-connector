@@ -10,7 +10,7 @@
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.NOT_READABLE
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.NOT_RETURNED_BY_DEFAULT
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.NOT_UPDATEABLE
-import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
+
 import groovyx.net.http.RESTClient
 import org.apache.http.client.HttpClient
 import org.forgerock.openicf.connectors.groovy.OperationType
@@ -23,8 +23,8 @@ def operation = operation as OperationType
 def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
-def log = Log.getLog(ScriptedRESTConnector.class) 
-def logPrefix = "[FHIR] [SchemaScript]: "
+def log = log as Log
+def logPrefix = "[Epic] [SchemaScript]: "
 
 log.info(logPrefix + "Entering " + operation + " Script!");
 
@@ -35,106 +35,73 @@ idAIB.setCreateable(true);
 idAIB.setMultiValued(false);
 idAIB.setUpdateable(false);
 
-// departmentId
-def departmentIDAIB = new AttributeInfoBuilder("departmentID", String.class);
-departmentIDAIB.setMultiValued(false);
-
-// departmentIdType
-def departmentIDTypeAIB = new AttributeInfoBuilder("departmentIDType", String.class);
-departmentIDTypeAIB.setMultiValued(false);
-
-// nationalIdentifier
-def nationalIdentifierAIB = new AttributeInfoBuilder("nationalIdentifier", String.class);
-nationalIdentifierAIB.setMultiValued(false);
-
-// dob
-def dateOfBirthAIB = new AttributeInfoBuilder("dateOfBirth", String.class);
-dateOfBirthAIB.setMultiValued(false);
-
-// gender
-def genderAIB = new AttributeInfoBuilder("gender", String.class);
-genderAIB.setMultiValued(false);
-
-// marital status
-def maritalStatusAIB = new AttributeInfoBuilder("maritalStatus", String.class);
-maritalStatusAIB.setMultiValued(false);
-
-// race
-def raceAIB = new AttributeInfoBuilder("race", String.class);
-raceAIB.setMultiValued(false);
-
-//religion
-def religionAIB = new AttributeInfoBuilder("religion", String.class);
-religionAIB.setMultiValued(false);
-
-// Name
-def nameAIB = new AttributeInfoBuilder("name", String.class);
-nameAIB.setMultiValued(false);
-
-// address
-def addressAIB = new AttributeInfoBuilder("address", Map.class);
-addressAIB.setMultiValued(false);
-
-// telephone number
-def telephoneNumberAIB = new AttributeInfoBuilder("telephoneNumber", String.class);
-telephoneNumberAIB.setMultiValued(false);
-
-// sn
-def snAIB = new AttributeInfoBuilder("sn", String.class);
-snAIB.setMultiValued(false);
-
-// givenname
-def givenNameAIB = new AttributeInfoBuilder("givenName", String.class);
-givenNameAIB.setMultiValued(false);
-
-// postal address
-def postalAddressAIB = new AttributeInfoBuilder("postalAddress", String.class);
-postalAddressAIB.setMultiValued(false);
-
-// state
-def stateProvinceAIB = new AttributeInfoBuilder("stateProvince", String.class);
-stateProvinceAIB.setMultiValued(false);
-
-// city
-def cityAIB = new AttributeInfoBuilder("city", String.class);
-cityAIB.setMultiValued(false);
-
-// postal code
-def postalCodeAIB = new AttributeInfoBuilder("postalCode", String.class);
-postalCodeAIB.setMultiValued(false);
-
-// country
-def countryAIB = new AttributeInfoBuilder("country", String.class);
-countryAIB.setMultiValued(false);
-
-//zip code
 def email = new AttributeInfoBuilder("email", String.class);
 email.setMultiValued(false);
 
+def birthDate = new AttributeInfoBuilder("birthDate", String.class);
+birthDate.setMultiValued(false);
 
+// Additional Patient attributes
+def resourceType = new AttributeInfoBuilder("resourceType", String.class);
+resourceType.setMultiValued(false);
+
+def idAttr = new AttributeInfoBuilder("id", String.class);
+idAttr.setMultiValued(false);
+
+def gender = new AttributeInfoBuilder("gender", String.class);
+gender.setMultiValued(false);
+
+def multipleBirthBoolean = new AttributeInfoBuilder("multipleBirthBoolean", Boolean.class);
+multipleBirthBoolean.setMultiValued(false);
+
+// Complex or multi-entry fields as Map or Object
+def meta = new AttributeInfoBuilder("meta", Map.class);
+meta.setMultiValued(false);
+
+def text = new AttributeInfoBuilder("text", Map.class);
+text.setMultiValued(false);
+
+def extension = new AttributeInfoBuilder("extension", Map.class);
+extension.setMultiValued(true);
+
+def identifier = new AttributeInfoBuilder("identifier", Map.class);
+identifier.setMultiValued(true);
+
+def nameAttr = new AttributeInfoBuilder("name", Map.class);
+nameAttr.setMultiValued(true);
+
+def telecom = new AttributeInfoBuilder("telecom", Map.class);
+telecom.setMultiValued(true);
+
+def address = new AttributeInfoBuilder("address", Map.class);
+address.setMultiValued(true);
+
+def maritalStatus = new AttributeInfoBuilder("maritalStatus", Map.class);
+maritalStatus.setMultiValued(false);
+
+def communication = new AttributeInfoBuilder("communication", Map.class);
+communication.setMultiValued(true);
+
+// Build schema
 return builder.schema({
     objectClass {
         type ObjectClass.ACCOUNT_NAME
         attribute idAIB.build()
-        attribute departmentIDAIB.build()
-        attribute departmentIDTypeAIB.build()
-        attribute nationalIdentifierAIB.build()
-        attribute dateOfBirthAIB.build()
-        attribute genderAIB.build()
-        attribute maritalStatusAIB.build()
-        attribute raceAIB.build()
-        attribute religionAIB.build()
-        attribute addressAIB.build()
-        attribute nameAIB.build()
-        attribute telephoneNumberAIB.build()
-        attribute givenNameAIB.build()
-        attribute snAIB.build()
-        attribute postalAddressAIB.build()
-        attribute postalCodeAIB.build()
-        attribute cityAIB.build()
-        attribute stateProvinceAIB.build()
-        attribute countryAIB.build()
         attribute email.build()
+        attribute birthDate.build()
+        attribute resourceType.build()
+        attribute idAttr.build()
+        attribute gender.build()
+        attribute multipleBirthBoolean.build()
+        attribute meta.build()
+        attribute text.build()
+        attribute extension.build()
+        attribute identifier.build()
+        attribute nameAttr.build()
+        attribute telecom.build()
+        attribute address.build()
+        attribute maritalStatus.build()
+        attribute communication.build()
     }
 })
 

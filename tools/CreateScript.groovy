@@ -24,6 +24,7 @@ import org.identityconnectors.common.security.SecurityUtil
 import static groovyx.net.http.Method.POST
 import static groovyx.net.http.Method.PUT
 import org.forgerock.openicf.connectors.scriptedrest.ScriptedRESTConnector
+def log = Log.getLog(ScriptedRESTConnector.class) 
 
 def operation = operation as OperationType
 
@@ -31,11 +32,11 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def name = id as String
-def log = Log.getLog(ScriptedRESTConnector.class) 
+
 def objectClass = objectClass as ObjectClass
 def options = options as OperationOptions
 
-def logPrefix = "[FHIR] [CreateScript]: "
+def logPrefix = "[FHIR] [CreateScripts]: "
 log.error(logPrefix + "Entering " + operation + " Script");
 def createAttributes = new AttributesAccessor(attributes as Set<Attribute>)
 
@@ -54,29 +55,23 @@ switch (objectClass) {
             log.error(logPrefix + "Here is thisAt name: " + thisAt.getName() + " and here is thisAts value: " + thisAt.getValue());
             hm.put(thisAt.getName(), thisAt.getValue());
         }
-        def builder = new JsonBuilder()
-        def dob = hm.get("dateOfBirth");
-        dob = dob.get(0)
-        log.error(dob)
-        def givenName = hm.get("givenName");
-        givenName = givenName.get(0)
-        log.error(givenName)
-        def sn = hm.get("sn");
-        sn = sn.get(0)
-        def jsonString = "{\"resourceType\":\"Patient\",\"birthDate\":\"${dob}\",\"name\":[{\"family\":\"${sn}\",\"given\":[\"${givenName}\"]}]}"
+        hm.put("resourceType", "Patient");
+        def builder = new JsonBuilder(hm)
+        def jsonString = builder.toString()
         println jsonString
-
+        def userId = null
         try {
-            return connection.request(POST, JSON) { req ->
+            connection.request(POST, JSON) { req ->
                 uri.path = "/fhir/Patient"
                 headers.'Authorization' = "Basic " + bauth
                 body = jsonString
 
                 response.success = { resp, json ->
-                    return json.id
+                    userId = json.id
                 }
 
             }
+            return new Uid(userId)
         } catch (Exception ex) {
             log.error("exception")
             println ex
