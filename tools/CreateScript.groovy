@@ -68,78 +68,13 @@ switch (objectClass) {
 
         for(Iterator i = attributes.iterator();i.hasNext();){
             Attribute thisAt = i.next();
+            log.error(logPrefix + "Here is thisAt name: " + thisAt.getName() + " and here is thisAts value: " + thisAt.getValue());
             hm.put(thisAt.getName(), thisAt.getValue());
         }
-
-        def builder = new JsonBuilder()
-        def dob = hm.get("dateOfBirth");
-        def sn = hm.get("sn");
-        def givenName = hm.get("givenName");
-        def telephoneNumber = hm.get("telephoneNumber");
-        def postalAddress = hm.get("postalAddress");
-        def city = hm.get("city");
-        def state = hm.get("stateProvince");
-        def postalCode = hm.get("postalCode");
-        def country = hm.get("country");
-        def unique_identifier = hm.get("unique_identifier");
-        def gender = hm.get("gender");
-
-        if (dob != null && dob.get(0) != null) {
-            dob = dob.get(0)
-        }
-        if (sn != null && sn.get(0) != null) {
-            sn = sn.get(0)
-        }
-        if (givenName != null && givenName.get(0) != null) {
-            givenName = givenName.get(0)
-        }
-        if (telephoneNumber != null && telephoneNumber.get(0) != null) {
-            telephoneNumber = telephoneNumber.get(0)
-        }
-        if (postalAddress != null && postalAddress.get(0) != null) {
-            postalAddress = postalAddress.get(0)
-        }
-        if (city != null && city.get(0) != null) {
-            city = city.get(0)
-        }
-        if (state != null && state.get(0) != null) {
-            state = state.get(0)
-        }
-        if (postalCode != null && postalCode.get(0) != null) {
-            postalCode = postalCode.get(0)
-        }
-        if (country != null && country.get(0) != null) {
-            country = country.get(0)
-        }
-        if (unique_identifier != null && unique_identifier.get(0) != null) {
-            unique_identifier = unique_identifier.get(0)
-        }
-        if (gender != null && gender.get(0) != null) {
-            gender = gender.get(0)
-        }
-
-        def jsonString = "{\n" +
-                "  \"resourceType\": \"Patient\",\n" +
-                "  \"identifier\": [\n" +
-                "    {\n" +
-                "      \"use\": \"usual\",\n" +
-                "      \"system\": \"urn:oid:2.16.840.1.113883.4.1\",\n" +
-                "      \"value\": \"${unique_identifier}\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"gender\": \"${gender}\",\n" +
-                "  \"name\": [\n" +
-                "    {\n" +
-                "      \"use\": \"usual\",\n" +
-                "      \"family\": \"${sn}\",\n" +
-                "      \"given\": [\n" +
-                "        \"${givenName}\"\n" +
-                "      ]\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"birthDate\": \"${dob}\"\n" +
-                "  \n" +
-                "}"
+        hm.put("resourceType", "Patient");
+        def builder = new JsonBuilder(hm)
+        def jsonString = builder.toString()
+        println jsonString
 
 
     

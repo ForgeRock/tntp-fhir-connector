@@ -49,9 +49,16 @@ switch (operation) {
         def builder = new JsonBuilder()
         switch (objectClass) {
             case ObjectClass.ACCOUNT:
-                def dob = ""
-                log.error(dob)
-                def jsonString = "{ \"resourceType\": \"Patient\", \"birthDate\": \"${dob}\"}"
+                HashMap hm = new HashMap();
+
+                for(Iterator i = attributes.iterator();i.hasNext();){
+                    Attribute thisAt = i.next();
+                    log.error(logPrefix + "Here is thisAt name: " + thisAt.getName() + " and here is thisAts value: " + thisAt.getValue());
+                    hm.put(thisAt.getName(), thisAt.getValue());
+                }
+                hm.put("resourceType", "Patient");
+                def builder = new JsonBuilder(hm)
+                def jsonString = builder.toString()
                 connection.request(PUT, JSON) { req ->
                     uri.path = "/fhir/Patient/" +uid
                     body = jsonString

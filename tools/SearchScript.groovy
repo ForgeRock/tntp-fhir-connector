@@ -165,30 +165,9 @@ if (filter != null) {
                         break;
                     }
                 }
-                def email = null
-                def telephoneNumber = null
-                for(def i = 0; json.telecom != null && i < json.telecom.size(); i++) {
-                    if(json.telecom[i].system == "email") {
-                        email = json.telecom[i].value
-                    }
-                    if(json.telecom[i].system == "phone") {
-                        telephoneNumber = json.telecom[i].value
-                    }
-                }
                 
 
-                Map<String, Object> map = new LinkedHashMap<>();
-                map.put("givenName", json.name[0].given[0]);
-                map.put("sn", json.name[0].family);
-                map.put("gender", json.gender);
-                map.put("unique_identifier", json.identifier[0].value);
-                map.put("dateOfBirth", json.birthDate);
-                map.put("userName", userName)
-                map.put("email", email)
-
-                if(telephoneNumber != null) {
-                    map.put("telephoneNumber", telephoneNumber)
-                }
+                def map = json
                 
                 handler {
                     uid json.id
@@ -297,12 +276,13 @@ if (filter != null) {
                 def returnedJson = json1.parseText(item)
                 log.error(loggerPrefix +  "Item number " + z+ ": " +returnedJson)
 
-
+                def map = item
                 // resp is HttpResponseDecorator
                 assert resp.status == 200
                 handler{
                     uid returnedJson.id
                     id returnedJson.id
+                    attributes ScriptedRESTUtils.MapToAttributes(map, [], false, false)
                 }
             }
                 

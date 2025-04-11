@@ -24,7 +24,7 @@ def configuration = configuration as ScriptedRESTConfiguration
 def httpClient = connection as HttpClient
 def connection = customizedConnection as RESTClient
 def log = log as Log
-def logPrefix = "[FHIR] [SchemaScript]: "
+def logPrefix = "[Epic] [SchemaScript]: "
 
 log.info(logPrefix + "Entering " + operation + " Script!");
 
@@ -35,115 +35,74 @@ idAIB.setCreateable(true);
 idAIB.setMultiValued(false);
 idAIB.setUpdateable(false);
 
-// userName
-def departmentIDAIB = new AttributeInfoBuilder("departmentID", String.class);
-departmentIDAIB.setMultiValued(false);
-
-// displayName
-def departmentIDTypeAIB = new AttributeInfoBuilder("departmentIDType", String.class);
-departmentIDTypeAIB.setMultiValued(false);
-
-// familyName
-def nationalIdentifierAIB = new AttributeInfoBuilder("nationalIdentifier", String.class);
-nationalIdentifierAIB.setMultiValued(false);
-
-// dob
-def dateOfBirthAIB = new AttributeInfoBuilder("dateOfBirth", String.class);
-dateOfBirthAIB.setMultiValued(false);
-
-// emailAddress
-def maritalStatusAIB = new AttributeInfoBuilder("maritalStatus", String.class);
-maritalStatusAIB.setMultiValued(false);
-
-// race
-def raceAIB = new AttributeInfoBuilder("race", String.class);
-raceAIB.setMultiValued(false);
-
-//created
-def religionAIB = new AttributeInfoBuilder("religion", String.class);
-religionAIB.setMultiValued(false);
-
-// Name
-def nameAIB = new AttributeInfoBuilder("name", String.class);
-nameAIB.setMultiValued(false);
-
-// Name
-def addressAIB = new AttributeInfoBuilder("address", Map.class);
-addressAIB.setMultiValued(false);
-
-// dob
-def telephoneNumberAIB = new AttributeInfoBuilder("telephoneNumber", String.class);
-telephoneNumberAIB.setMultiValued(false);
-
-// dob
-def snAIB = new AttributeInfoBuilder("sn", String.class);
-snAIB.setMultiValued(false);
-
-// dob
-def givenNameAIB = new AttributeInfoBuilder("givenName", String.class);
-givenNameAIB.setMultiValued(false);
-
-// dob
-def postalAddressAIB = new AttributeInfoBuilder("postalAddress", String.class);
-postalAddressAIB.setMultiValued(false);
-
-// dob
-def stateProvinceAIB = new AttributeInfoBuilder("stateProvince", String.class);
-stateProvinceAIB.setMultiValued(false);
-
-// dob
-def cityAIB = new AttributeInfoBuilder("city", String.class);
-cityAIB.setMultiValued(false);
-
-// dob
-def postalCodeAIB = new AttributeInfoBuilder("postalCode", String.class);
-postalCodeAIB.setMultiValued(false);
-
-// dob
-def countryAIB = new AttributeInfoBuilder("country", String.class);
-countryAIB.setMultiValued(false);
-
-// dob
-def gender = new AttributeInfoBuilder("gender", String.class);
-gender.setMultiValued(false);
-
-// dob
-def userName = new AttributeInfoBuilder("userName", String.class);
-userName.setMultiValued(false);
-
-// dob
-def unique_identifier = new AttributeInfoBuilder("unique_identifier", String.class);
-unique_identifier.setMultiValued(false);
-
 def email = new AttributeInfoBuilder("email", String.class);
 email.setMultiValued(false);
 
+def birthDate = new AttributeInfoBuilder("birthDate", String.class);
+birthDate.setMultiValued(false);
+
+// Additional Patient attributes
+def resourceType = new AttributeInfoBuilder("resourceType", String.class);
+resourceType.setMultiValued(false);
+
+def idAttr = new AttributeInfoBuilder("id", String.class);
+idAttr.setMultiValued(false);
+
+def gender = new AttributeInfoBuilder("gender", String.class);
+gender.setMultiValued(false);
+
+def multipleBirthBoolean = new AttributeInfoBuilder("multipleBirthBoolean", Boolean.class);
+multipleBirthBoolean.setMultiValued(false);
+
+// Complex or multi-entry fields as Map or Object
+def meta = new AttributeInfoBuilder("meta", Map.class);
+meta.setMultiValued(false);
+
+def text = new AttributeInfoBuilder("text", Map.class);
+text.setMultiValued(false);
+
+def extension = new AttributeInfoBuilder("extension", Map.class);
+extension.setMultiValued(true);
+
+def identifier = new AttributeInfoBuilder("identifier", Map.class);
+identifier.setMultiValued(true);
+
+def nameAttr = new AttributeInfoBuilder("name", Map.class);
+nameAttr.setMultiValued(true);
+
+def telecom = new AttributeInfoBuilder("telecom", Map.class);
+telecom.setMultiValued(true);
+
+def address = new AttributeInfoBuilder("address", Map.class);
+address.setMultiValued(true);
+
+def maritalStatus = new AttributeInfoBuilder("maritalStatus", Map.class);
+maritalStatus.setMultiValued(false);
+
+def communication = new AttributeInfoBuilder("communication", Map.class);
+communication.setMultiValued(true);
+
+// Build schema
 return builder.schema({
     objectClass {
         type ObjectClass.ACCOUNT_NAME
         attribute idAIB.build()
-        attribute departmentIDAIB.build()
-        attribute departmentIDTypeAIB.build()
-        attribute nationalIdentifierAIB.build()
-        attribute dateOfBirthAIB.build()
-        attribute maritalStatusAIB.build()
-        attribute raceAIB.build()
-        attribute religionAIB.build()
-        attribute addressAIB.build()
-        attribute nameAIB.build()
-        attribute telephoneNumberAIB.build()
-        attribute givenNameAIB.build()
-        attribute snAIB.build()
-        attribute postalAddressAIB.build()
-        attribute postalCodeAIB.build()
-        attribute cityAIB.build()
-        attribute stateProvinceAIB.build()
-        attribute countryAIB.build()
-        attribute gender.build()
-        attribute unique_identifier.build()
-        attribute userName.build()
         attribute email.build()
+        attribute birthDate.build()
+        attribute resourceType.build()
+        attribute idAttr.build()
+        attribute gender.build()
+        attribute multipleBirthBoolean.build()
+        attribute meta.build()
+        attribute text.build()
+        attribute extension.build()
+        attribute identifier.build()
+        attribute nameAttr.build()
+        attribute telecom.build()
+        attribute address.build()
+        attribute maritalStatus.build()
+        attribute communication.build()
     }
 })
 
-log.info(logPrefix + "Schema script done");
+log.error(logPrefix + "Schema script dones");
