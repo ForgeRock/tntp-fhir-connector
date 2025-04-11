@@ -54,15 +54,15 @@ switch (operation) {
         switch (objectClass) {
             case ObjectClass.ACCOUNT:
                 HashMap hm = new HashMap();
-                def dob = hm.get("dateOfBirth");
-                dob = dob.get(0)
-                log.error(dob)
-                def givenName = hm.get("givenName");
-                givenName = givenName.get(0)
-                log.error(givenName)
-                def sn = hm.get("sn");
-                sn = sn.get(0)
-                def jsonString = "{\"resourceType\":\"Patient\",\"birthDate\":\"${dob}\",\"name\":[{\"family\":\"${sn}\",\"given\":[\"${givenName}\"]}]}"
+
+                for(Iterator i = attributes.iterator();i.hasNext();){
+                    Attribute thisAt = i.next();
+                    log.error(logPrefix + "Here is thisAt name: " + thisAt.getName() + " and here is thisAts value: " + thisAt.getValue());
+                    hm.put(thisAt.getName(), thisAt.getValue());
+                }
+                hm.put("resourceType", "Patient");
+                def builder = new JsonBuilder(hm)
+                def jsonString = builder.toString()
                 return connection.request(PUT, JSON) { req ->
                     uri.path = "/fhir/Patient/" + uid
                     headers.'Authorization' = "Basic " + bauth
