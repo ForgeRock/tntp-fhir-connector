@@ -50,10 +50,11 @@ def bauth = up.getBytes().encodeBase64()
 
 switch (operation) {
     case OperationType.UPDATE:
-        def builder = new JsonBuilder()
+        
         switch (objectClass) {
             case ObjectClass.ACCOUNT:
                 HashMap hm = new HashMap();
+                def builder = new JsonBuilder()
 
                 for(Iterator i = attributes.iterator();i.hasNext();){
                     Attribute thisAt = i.next();
