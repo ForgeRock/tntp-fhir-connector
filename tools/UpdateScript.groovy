@@ -61,7 +61,6 @@ switch (operation) {
                     hm.put(thisAt.getName(), thisAt.getValue());
                 }
                 hm.put("resourceType", "Patient");
-                def builder = new JsonBuilder(hm)
                 def jsonString = builder.toString()
                 return connection.request(PUT, JSON) { req ->
                     uri.path = "/fhir/Patient/" + uid
