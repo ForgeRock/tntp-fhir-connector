@@ -41,7 +41,7 @@ import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.PUT
 def options = options as OperationOptions
 def uid = uid as Uid
-
+def logPrefix = "[FHIR] [UpdateScripts]: "
 log.error("Entering " + operation + " Script");
 
 def customConfig = configuration.getPropertyBag().get("config") as ConfigObject
