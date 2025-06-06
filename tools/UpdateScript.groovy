@@ -54,7 +54,7 @@ switch (operation) {
         switch (objectClass) {
             case ObjectClass.ACCOUNT:
                 HashMap hm = new HashMap();
-                def builder = new JsonBuilder()
+               
 
                 for(Iterator i = attributes.iterator();i.hasNext();){
                     Attribute thisAt = i.next();
@@ -62,11 +62,14 @@ switch (operation) {
                     hm.put(thisAt.getName(), thisAt.getValue());
                 }
                 hm.put("resourceType", "Patient");
-                def jsonString = builder.toString()
+                hm.put("id", uid["uidValue"]);
+                def hmAttributes = new JsonBuilder(hm).toString()
+                log.error("[FHIR] [UpdateScript]: " + "STRING HashMap Attributes: {0}", new Object[]{hmAttributes})
+
                 return connection.request(PUT, JSON) { req ->
-                    uri.path = "/fhir/Patient/" + uid
+                    uri.path = "/fhir/Patient/" + uid["uidValue"]
                     headers.'Authorization' = "Basic " + bauth
-                    body = jsonString
+                    body = hmAttributes
 
                     response.success = { resp, json ->
                         return json.id
